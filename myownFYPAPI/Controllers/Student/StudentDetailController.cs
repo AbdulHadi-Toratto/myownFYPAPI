@@ -31,7 +31,7 @@ namespace myownFYPAPI.Controllers.Student
                     TeacherName = e.Teacher.name,
                     SessionName = e.Session.name
                 })
-                .ToList();
+                
 
             if (result.Count == 0)
                 return NotFound();
