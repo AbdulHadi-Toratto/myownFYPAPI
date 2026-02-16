@@ -1,0 +1,1412 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="fypapiv1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="code" />
+          </Key>
+          <Property Name="code" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="title" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CourseAllocation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="teacherID" Type="varchar" MaxLength="20" />
+          <Property Name="courseCode" Type="varchar" MaxLength="20" />
+          <Property Name="sessionID" Type="int" />
+        </EntityType>
+        <EntityType Name="EmployeeType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="type" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="EmployeSessionKPI">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KPIID" Type="int" />
+          <Property Name="SubKPIID" Type="int" />
+          <Property Name="SessionID" Type="int" />
+        </EntityType>
+        <EntityType Name="Enrollment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="studentID" Type="varchar" MaxLength="20" />
+          <Property Name="teacherID" Type="varchar" MaxLength="20" />
+          <Property Name="courseCode" Type="varchar" MaxLength="20" />
+          <Property Name="sessionID" Type="int" />
+        </EntityType>
+        <EntityType Name="KPI">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="KPIScore">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="empKPIID" Type="int" />
+          <Property Name="empID" Type="varchar" MaxLength="20" />
+          <Property Name="score" Type="int" />
+          <Property Name="evaluatorID" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="PeerEvaluation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="evaluatorID" Type="int" />
+          <Property Name="evaluateeID" Type="varchar" MaxLength="20" />
+          <Property Name="questionID" Type="int" />
+          <Property Name="courseCode" Type="varchar" MaxLength="20" />
+          <Property Name="score" Type="int" />
+        </EntityType>
+        <EntityType Name="PeerEvaluator">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="teacherID" Type="varchar" MaxLength="20" />
+          <Property Name="sessionID" Type="int" />
+        </EntityType>
+        <EntityType Name="Questionare">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="type" Type="varchar" MaxLength="50" />
+          <Property Name="flag" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Questions">
+          <Key>
+            <PropertyRef Name="QuestionID" />
+          </Key>
+          <Property Name="QuestionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="QuestionareID" Type="int" Nullable="false" />
+          <Property Name="QuestionText" Type="nvarchar" MaxLength="500" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Session">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="30" />
+          <Property Name="admissionSessionID" Type="int" />
+        </EntityType>
+        <EntityType Name="StudentEvaluation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="enrollmentID" Type="int" />
+          <Property Name="questionID" Type="int" />
+          <Property Name="score" Type="int" />
+        </EntityType>
+        <EntityType Name="SubKPI">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="KPIID" Type="int" />
+          <Property Name="name" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Teacher">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" />
+          <Property Name="department" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="password" Type="varchar" MaxLength="20" />
+          <Property Name="role" Type="varchar" MaxLength="20" />
+          <Property Name="profileImagePath" Type="varchar" MaxLength="50" />
+          <Property Name="isActive" Type="int" />
+        </EntityType>
+        <Association Name="FK__CourseAll__cours__0F624AF8">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="CourseAllocation" Type="Self.CourseAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="CourseAllocation">
+              <PropertyRef Name="courseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CourseAll__sessi__10566F31">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="CourseAllocation" Type="Self.CourseAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CourseAllocation">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CourseAll__teach__0E6E26BF">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="CourseAllocation" Type="Self.CourseAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="CourseAllocation">
+              <PropertyRef Name="teacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EmployeSe__KPIID__656C112C">
+          <End Role="KPI" Type="Self.KPI" Multiplicity="0..1" />
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="KPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EmployeSe__Sessi__6754599E">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="SessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EmployeSe__SubKP__66603565">
+          <End Role="SubKPI" Type="Self.SubKPI" Multiplicity="0..1" />
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubKPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="SubKPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__cours__7B5B524B">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="courseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__sessi__7C4F7684">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__stude__797309D9">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="studentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__teach__7A672E12">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="teacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KPIScore__empID__6D0D32F4">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="KPIScore" Type="Self.KPIScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPIScore">
+              <PropertyRef Name="empID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KPIScore__empKPI__6C190EBB">
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="0..1" />
+          <End Role="KPIScore" Type="Self.KPIScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeSessionKPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPIScore">
+              <PropertyRef Name="empKPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KPIScore__evalua__6E01572D">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="KPIScore" Type="Self.KPIScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPIScore">
+              <PropertyRef Name="evaluatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__cours__0B91BA14">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="courseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__evalu__08B54D69">
+          <End Role="PeerEvaluator" Type="Self.PeerEvaluator" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PeerEvaluator">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="evaluatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__evalu__09A971A2">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="evaluateeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__quest__0A9D95DB">
+          <End Role="Questionare" Type="Self.Questionare" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionare">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="questionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__sessi__05D8E0BE">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="PeerEvaluator" Type="Self.PeerEvaluator" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PeerEvaluator">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__teach__04E4BC85">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="PeerEvaluator" Type="Self.PeerEvaluator" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="PeerEvaluator">
+              <PropertyRef Name="teacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Student__admissi__71D1E811">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="admissionSessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Student__userID__70DDC3D8">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StudentEv__enrol__01142BA1">
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="0..1" />
+          <End Role="StudentEvaluation" Type="Self.StudentEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Enrollment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentEvaluation">
+              <PropertyRef Name="enrollmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StudentEv__quest__02084FDA">
+          <End Role="Questionare" Type="Self.Questionare" Multiplicity="0..1" />
+          <End Role="StudentEvaluation" Type="Self.StudentEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionare">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentEvaluation">
+              <PropertyRef Name="questionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SubKPI__KPIID__628FA481">
+          <End Role="KPI" Type="Self.KPI" Multiplicity="0..1" />
+          <End Role="SubKPI" Type="Self.SubKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SubKPI">
+              <PropertyRef Name="KPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Teacher__userID__74AE54BC">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Questions_Questionare">
+          <End Role="Questionare" Type="Self.Questionare" Multiplicity="1" />
+          <End Role="Questions" Type="Self.Questions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionare">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Questions">
+              <PropertyRef Name="QuestionareID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="fypapiv1ModelStoreContainer">
+          <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CourseAllocation" EntityType="Self.CourseAllocation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeeType" EntityType="Self.EmployeeType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeSessionKPI" EntityType="Self.EmployeSessionKPI" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Enrollment" EntityType="Self.Enrollment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KPI" EntityType="Self.KPI" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="KPIScore" EntityType="Self.KPIScore" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PeerEvaluation" EntityType="Self.PeerEvaluation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PeerEvaluator" EntityType="Self.PeerEvaluator" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Questionare" EntityType="Self.Questionare" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StudentEvaluation" EntityType="Self.StudentEvaluation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SubKPI" EntityType="Self.SubKPI" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Teacher" EntityType="Self.Teacher" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__CourseAll__cours__0F624AF8" Association="Self.FK__CourseAll__cours__0F624AF8">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="CourseAllocation" EntitySet="CourseAllocation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CourseAll__sessi__10566F31" Association="Self.FK__CourseAll__sessi__10566F31">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="CourseAllocation" EntitySet="CourseAllocation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CourseAll__teach__0E6E26BF" Association="Self.FK__CourseAll__teach__0E6E26BF">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="CourseAllocation" EntitySet="CourseAllocation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EmployeSe__KPIID__656C112C" Association="Self.FK__EmployeSe__KPIID__656C112C">
+            <End Role="KPI" EntitySet="KPI" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EmployeSe__Sessi__6754599E" Association="Self.FK__EmployeSe__Sessi__6754599E">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EmployeSe__SubKP__66603565" Association="Self.FK__EmployeSe__SubKP__66603565">
+            <End Role="SubKPI" EntitySet="SubKPI" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__cours__7B5B524B" Association="Self.FK__Enrollmen__cours__7B5B524B">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__sessi__7C4F7684" Association="Self.FK__Enrollmen__sessi__7C4F7684">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__stude__797309D9" Association="Self.FK__Enrollmen__stude__797309D9">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__teach__7A672E12" Association="Self.FK__Enrollmen__teach__7A672E12">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KPIScore__empID__6D0D32F4" Association="Self.FK__KPIScore__empID__6D0D32F4">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="KPIScore" EntitySet="KPIScore" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KPIScore__empKPI__6C190EBB" Association="Self.FK__KPIScore__empKPI__6C190EBB">
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+            <End Role="KPIScore" EntitySet="KPIScore" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KPIScore__evalua__6E01572D" Association="Self.FK__KPIScore__evalua__6E01572D">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="KPIScore" EntitySet="KPIScore" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__cours__0B91BA14" Association="Self.FK__PeerEvalu__cours__0B91BA14">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__evalu__08B54D69" Association="Self.FK__PeerEvalu__evalu__08B54D69">
+            <End Role="PeerEvaluator" EntitySet="PeerEvaluator" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__evalu__09A971A2" Association="Self.FK__PeerEvalu__evalu__09A971A2">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__quest__0A9D95DB" Association="Self.FK__PeerEvalu__quest__0A9D95DB">
+            <End Role="Questionare" EntitySet="Questionare" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__sessi__05D8E0BE" Association="Self.FK__PeerEvalu__sessi__05D8E0BE">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="PeerEvaluator" EntitySet="PeerEvaluator" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__teach__04E4BC85" Association="Self.FK__PeerEvalu__teach__04E4BC85">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="PeerEvaluator" EntitySet="PeerEvaluator" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Student__admissi__71D1E811" Association="Self.FK__Student__admissi__71D1E811">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Student__userID__70DDC3D8" Association="Self.FK__Student__userID__70DDC3D8">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StudentEv__enrol__01142BA1" Association="Self.FK__StudentEv__enrol__01142BA1">
+            <End Role="Enrollment" EntitySet="Enrollment" />
+            <End Role="StudentEvaluation" EntitySet="StudentEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StudentEv__quest__02084FDA" Association="Self.FK__StudentEv__quest__02084FDA">
+            <End Role="Questionare" EntitySet="Questionare" />
+            <End Role="StudentEvaluation" EntitySet="StudentEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SubKPI__KPIID__628FA481" Association="Self.FK__SubKPI__KPIID__628FA481">
+            <End Role="KPI" EntitySet="KPI" />
+            <End Role="SubKPI" EntitySet="SubKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Teacher__userID__74AE54BC" Association="Self.FK__Teacher__userID__74AE54BC">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Teacher" EntitySet="Teacher" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Questions_Questionare" Association="Self.FK_Questions_Questionare">
+            <End Role="Questionare" EntitySet="Questionare" />
+            <End Role="Questions" EntitySet="Questions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="fypapiv1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Course">
+          <Key>
+            <PropertyRef Name="code" />
+          </Key>
+          <Property Name="code" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CourseAllocation" Relationship="Self.FK__CourseAll__cours__0F624AF8" FromRole="Course" ToRole="CourseAllocation" />
+          <NavigationProperty Name="Enrollment" Relationship="Self.FK__Enrollmen__cours__7B5B524B" FromRole="Course" ToRole="Enrollment" />
+          <NavigationProperty Name="PeerEvaluation" Relationship="Self.FK__PeerEvalu__cours__0B91BA14" FromRole="Course" ToRole="PeerEvaluation" />
+        </EntityType>
+        <EntityType Name="CourseAllocation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="teacherID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="courseCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="sessionID" Type="Int32" />
+          <NavigationProperty Name="Course" Relationship="Self.FK__CourseAll__cours__0F624AF8" FromRole="CourseAllocation" ToRole="Course" />
+          <NavigationProperty Name="Session" Relationship="Self.FK__CourseAll__sessi__10566F31" FromRole="CourseAllocation" ToRole="Session" />
+          <NavigationProperty Name="Teacher" Relationship="Self.FK__CourseAll__teach__0E6E26BF" FromRole="CourseAllocation" ToRole="Teacher" />
+        </EntityType>
+        <EntityType Name="EmployeeType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="EmployeSessionKPI">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KPIID" Type="Int32" />
+          <Property Name="SubKPIID" Type="Int32" />
+          <Property Name="SessionID" Type="Int32" />
+          <NavigationProperty Name="KPI" Relationship="Self.FK__EmployeSe__KPIID__656C112C" FromRole="EmployeSessionKPI" ToRole="KPI" />
+          <NavigationProperty Name="Session" Relationship="Self.FK__EmployeSe__Sessi__6754599E" FromRole="EmployeSessionKPI" ToRole="Session" />
+          <NavigationProperty Name="SubKPI" Relationship="Self.FK__EmployeSe__SubKP__66603565" FromRole="EmployeSessionKPI" ToRole="SubKPI" />
+          <NavigationProperty Name="KPIScore" Relationship="Self.FK__KPIScore__empKPI__6C190EBB" FromRole="EmployeSessionKPI" ToRole="KPIScore" />
+        </EntityType>
+        <EntityType Name="Enrollment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="studentID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="teacherID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="courseCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="sessionID" Type="Int32" />
+          <NavigationProperty Name="Course" Relationship="Self.FK__Enrollmen__cours__7B5B524B" FromRole="Enrollment" ToRole="Course" />
+          <NavigationProperty Name="Session" Relationship="Self.FK__Enrollmen__sessi__7C4F7684" FromRole="Enrollment" ToRole="Session" />
+          <NavigationProperty Name="Student" Relationship="Self.FK__Enrollmen__stude__797309D9" FromRole="Enrollment" ToRole="Student" />
+          <NavigationProperty Name="Teacher" Relationship="Self.FK__Enrollmen__teach__7A672E12" FromRole="Enrollment" ToRole="Teacher" />
+          <NavigationProperty Name="StudentEvaluation" Relationship="Self.FK__StudentEv__enrol__01142BA1" FromRole="Enrollment" ToRole="StudentEvaluation" />
+        </EntityType>
+        <EntityType Name="KPI">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EmployeSessionKPI" Relationship="Self.FK__EmployeSe__KPIID__656C112C" FromRole="KPI" ToRole="EmployeSessionKPI" />
+          <NavigationProperty Name="SubKPI" Relationship="Self.FK__SubKPI__KPIID__628FA481" FromRole="KPI" ToRole="SubKPI" />
+        </EntityType>
+        <EntityType Name="KPIScore">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="empKPIID" Type="Int32" />
+          <Property Name="empID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="score" Type="Int32" />
+          <Property Name="evaluatorID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EmployeSessionKPI" Relationship="Self.FK__KPIScore__empKPI__6C190EBB" FromRole="KPIScore" ToRole="EmployeSessionKPI" />
+          <NavigationProperty Name="Users" Relationship="Self.FK__KPIScore__empID__6D0D32F4" FromRole="KPIScore" ToRole="Users" />
+          <NavigationProperty Name="Users1" Relationship="Self.FK__KPIScore__evalua__6E01572D" FromRole="KPIScore" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="PeerEvaluation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="evaluatorID" Type="Int32" />
+          <Property Name="evaluateeID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="questionID" Type="Int32" />
+          <Property Name="courseCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="score" Type="Int32" />
+          <NavigationProperty Name="Course" Relationship="Self.FK__PeerEvalu__cours__0B91BA14" FromRole="PeerEvaluation" ToRole="Course" />
+          <NavigationProperty Name="PeerEvaluator" Relationship="Self.FK__PeerEvalu__evalu__08B54D69" FromRole="PeerEvaluation" ToRole="PeerEvaluator" />
+          <NavigationProperty Name="Teacher" Relationship="Self.FK__PeerEvalu__evalu__09A971A2" FromRole="PeerEvaluation" ToRole="Teacher" />
+          <NavigationProperty Name="Questionare" Relationship="Self.FK__PeerEvalu__quest__0A9D95DB" FromRole="PeerEvaluation" ToRole="Questionare" />
+        </EntityType>
+        <EntityType Name="PeerEvaluator">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="teacherID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="sessionID" Type="Int32" />
+          <NavigationProperty Name="PeerEvaluation" Relationship="Self.FK__PeerEvalu__evalu__08B54D69" FromRole="PeerEvaluator" ToRole="PeerEvaluation" />
+          <NavigationProperty Name="Session" Relationship="Self.FK__PeerEvalu__sessi__05D8E0BE" FromRole="PeerEvaluator" ToRole="Session" />
+          <NavigationProperty Name="Teacher" Relationship="Self.FK__PeerEvalu__teach__04E4BC85" FromRole="PeerEvaluator" ToRole="Teacher" />
+        </EntityType>
+        <EntityType Name="Questionare">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="PeerEvaluation" Relationship="Self.FK__PeerEvalu__quest__0A9D95DB" FromRole="Questionare" ToRole="PeerEvaluation" />
+          <NavigationProperty Name="StudentEvaluation" Relationship="Self.FK__StudentEv__quest__02084FDA" FromRole="Questionare" ToRole="StudentEvaluation" />
+          <Property Name="flag" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Questions" Relationship="fypapiv1Model.FK_Questions_Questionare" FromRole="Questionare" ToRole="Questions" />
+        </EntityType>
+        <EntityType Name="Session">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CourseAllocation" Relationship="Self.FK__CourseAll__sessi__10566F31" FromRole="Session" ToRole="CourseAllocation" />
+          <NavigationProperty Name="EmployeSessionKPI" Relationship="Self.FK__EmployeSe__Sessi__6754599E" FromRole="Session" ToRole="EmployeSessionKPI" />
+          <NavigationProperty Name="Enrollment" Relationship="Self.FK__Enrollmen__sessi__7C4F7684" FromRole="Session" ToRole="Enrollment" />
+          <NavigationProperty Name="PeerEvaluator" Relationship="Self.FK__PeerEvalu__sessi__05D8E0BE" FromRole="Session" ToRole="PeerEvaluator" />
+          <NavigationProperty Name="Student" Relationship="Self.FK__Student__admissi__71D1E811" FromRole="Session" ToRole="Student" />
+        </EntityType>
+        <EntityType Name="Student">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="admissionSessionID" Type="Int32" />
+          <NavigationProperty Name="Enrollment" Relationship="Self.FK__Enrollmen__stude__797309D9" FromRole="Student" ToRole="Enrollment" />
+          <NavigationProperty Name="Session" Relationship="Self.FK__Student__admissi__71D1E811" FromRole="Student" ToRole="Session" />
+          <NavigationProperty Name="Users" Relationship="Self.FK__Student__userID__70DDC3D8" FromRole="Student" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="StudentEvaluation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="enrollmentID" Type="Int32" />
+          <Property Name="questionID" Type="Int32" />
+          <Property Name="score" Type="Int32" />
+          <NavigationProperty Name="Enrollment" Relationship="Self.FK__StudentEv__enrol__01142BA1" FromRole="StudentEvaluation" ToRole="Enrollment" />
+          <NavigationProperty Name="Questionare" Relationship="Self.FK__StudentEv__quest__02084FDA" FromRole="StudentEvaluation" ToRole="Questionare" />
+        </EntityType>
+        <EntityType Name="SubKPI">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="KPIID" Type="Int32" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EmployeSessionKPI" Relationship="Self.FK__EmployeSe__SubKP__66603565" FromRole="SubKPI" ToRole="EmployeSessionKPI" />
+          <NavigationProperty Name="KPI" Relationship="Self.FK__SubKPI__KPIID__628FA481" FromRole="SubKPI" ToRole="KPI" />
+        </EntityType>
+        <EntityType Name="Teacher">
+          <Key>
+            <PropertyRef Name="userID" />
+          </Key>
+          <Property Name="userID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="department" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CourseAllocation" Relationship="Self.FK__CourseAll__teach__0E6E26BF" FromRole="Teacher" ToRole="CourseAllocation" />
+          <NavigationProperty Name="Enrollment" Relationship="Self.FK__Enrollmen__teach__7A672E12" FromRole="Teacher" ToRole="Enrollment" />
+          <NavigationProperty Name="PeerEvaluation" Relationship="Self.FK__PeerEvalu__evalu__09A971A2" FromRole="Teacher" ToRole="PeerEvaluation" />
+          <NavigationProperty Name="PeerEvaluator" Relationship="Self.FK__PeerEvalu__teach__04E4BC85" FromRole="Teacher" ToRole="PeerEvaluator" />
+          <NavigationProperty Name="Users" Relationship="Self.FK__Teacher__userID__74AE54BC" FromRole="Teacher" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="profileImagePath" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isActive" Type="Int32" />
+          <NavigationProperty Name="KPIScore" Relationship="Self.FK__KPIScore__empID__6D0D32F4" FromRole="Users" ToRole="KPIScore" />
+          <NavigationProperty Name="KPIScore1" Relationship="Self.FK__KPIScore__evalua__6E01572D" FromRole="Users" ToRole="KPIScore" />
+          <NavigationProperty Name="Student" Relationship="Self.FK__Student__userID__70DDC3D8" FromRole="Users" ToRole="Student" />
+          <NavigationProperty Name="Teacher" Relationship="Self.FK__Teacher__userID__74AE54BC" FromRole="Users" ToRole="Teacher" />
+        </EntityType>
+        <Association Name="FK__CourseAll__cours__0F624AF8">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="CourseAllocation" Type="Self.CourseAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="CourseAllocation">
+              <PropertyRef Name="courseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__cours__7B5B524B">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="courseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__cours__0B91BA14">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="courseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CourseAll__sessi__10566F31">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="CourseAllocation" Type="Self.CourseAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CourseAllocation">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CourseAll__teach__0E6E26BF">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="CourseAllocation" Type="Self.CourseAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="CourseAllocation">
+              <PropertyRef Name="teacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EmployeSe__KPIID__656C112C">
+          <End Role="KPI" Type="Self.KPI" Multiplicity="0..1" />
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="KPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EmployeSe__Sessi__6754599E">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="SessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EmployeSe__SubKP__66603565">
+          <End Role="SubKPI" Type="Self.SubKPI" Multiplicity="0..1" />
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubKPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="SubKPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KPIScore__empKPI__6C190EBB">
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="0..1" />
+          <End Role="KPIScore" Type="Self.KPIScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeSessionKPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPIScore">
+              <PropertyRef Name="empKPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__sessi__7C4F7684">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__stude__797309D9">
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Student">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="studentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Enrollmen__teach__7A672E12">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="Enrollment">
+              <PropertyRef Name="teacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StudentEv__enrol__01142BA1">
+          <End Role="Enrollment" Type="Self.Enrollment" Multiplicity="0..1" />
+          <End Role="StudentEvaluation" Type="Self.StudentEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Enrollment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentEvaluation">
+              <PropertyRef Name="enrollmentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SubKPI__KPIID__628FA481">
+          <End Role="KPI" Type="Self.KPI" Multiplicity="0..1" />
+          <End Role="SubKPI" Type="Self.SubKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SubKPI">
+              <PropertyRef Name="KPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KPIScore__empID__6D0D32F4">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="KPIScore" Type="Self.KPIScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPIScore">
+              <PropertyRef Name="empID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__KPIScore__evalua__6E01572D">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="KPIScore" Type="Self.KPIScore" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPIScore">
+              <PropertyRef Name="evaluatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__evalu__08B54D69">
+          <End Role="PeerEvaluator" Type="Self.PeerEvaluator" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PeerEvaluator">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="evaluatorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__evalu__09A971A2">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="evaluateeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__quest__0A9D95DB">
+          <End Role="Questionare" Type="Self.Questionare" Multiplicity="0..1" />
+          <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionare">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PeerEvaluation">
+              <PropertyRef Name="questionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__sessi__05D8E0BE">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="PeerEvaluator" Type="Self.PeerEvaluator" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="PeerEvaluator">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PeerEvalu__teach__04E4BC85">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="PeerEvaluator" Type="Self.PeerEvaluator" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="PeerEvaluator">
+              <PropertyRef Name="teacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__StudentEv__quest__02084FDA">
+          <End Role="Questionare" Type="Self.Questionare" Multiplicity="0..1" />
+          <End Role="StudentEvaluation" Type="Self.StudentEvaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionare">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentEvaluation">
+              <PropertyRef Name="questionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Student__admissi__71D1E811">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="admissionSessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Student__userID__70DDC3D8">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Student" Type="Self.Student" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Student">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Teacher__userID__74AE54BC">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="fypapiv1Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Course" EntityType="Self.Course" />
+          <EntitySet Name="CourseAllocation" EntityType="Self.CourseAllocation" />
+          <EntitySet Name="EmployeeType" EntityType="Self.EmployeeType" />
+          <EntitySet Name="EmployeSessionKPI" EntityType="Self.EmployeSessionKPI" />
+          <EntitySet Name="Enrollment" EntityType="Self.Enrollment" />
+          <EntitySet Name="KPI" EntityType="Self.KPI" />
+          <EntitySet Name="KPIScore" EntityType="Self.KPIScore" />
+          <EntitySet Name="PeerEvaluation" EntityType="Self.PeerEvaluation" />
+          <EntitySet Name="PeerEvaluator" EntityType="Self.PeerEvaluator" />
+          <EntitySet Name="Questionare" EntityType="Self.Questionare" />
+          <EntitySet Name="Session" EntityType="Self.Session" />
+          <EntitySet Name="Student" EntityType="Self.Student" />
+          <EntitySet Name="StudentEvaluation" EntityType="Self.StudentEvaluation" />
+          <EntitySet Name="SubKPI" EntityType="Self.SubKPI" />
+          <EntitySet Name="Teacher" EntityType="Self.Teacher" />
+          <EntitySet Name="Users" EntityType="Self.Users" />
+          <AssociationSet Name="FK__CourseAll__cours__0F624AF8" Association="Self.FK__CourseAll__cours__0F624AF8">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="CourseAllocation" EntitySet="CourseAllocation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__cours__7B5B524B" Association="Self.FK__Enrollmen__cours__7B5B524B">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__cours__0B91BA14" Association="Self.FK__PeerEvalu__cours__0B91BA14">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CourseAll__sessi__10566F31" Association="Self.FK__CourseAll__sessi__10566F31">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="CourseAllocation" EntitySet="CourseAllocation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CourseAll__teach__0E6E26BF" Association="Self.FK__CourseAll__teach__0E6E26BF">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="CourseAllocation" EntitySet="CourseAllocation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EmployeSe__KPIID__656C112C" Association="Self.FK__EmployeSe__KPIID__656C112C">
+            <End Role="KPI" EntitySet="KPI" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EmployeSe__Sessi__6754599E" Association="Self.FK__EmployeSe__Sessi__6754599E">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EmployeSe__SubKP__66603565" Association="Self.FK__EmployeSe__SubKP__66603565">
+            <End Role="SubKPI" EntitySet="SubKPI" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KPIScore__empKPI__6C190EBB" Association="Self.FK__KPIScore__empKPI__6C190EBB">
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+            <End Role="KPIScore" EntitySet="KPIScore" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__sessi__7C4F7684" Association="Self.FK__Enrollmen__sessi__7C4F7684">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__stude__797309D9" Association="Self.FK__Enrollmen__stude__797309D9">
+            <End Role="Student" EntitySet="Student" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Enrollmen__teach__7A672E12" Association="Self.FK__Enrollmen__teach__7A672E12">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="Enrollment" EntitySet="Enrollment" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StudentEv__enrol__01142BA1" Association="Self.FK__StudentEv__enrol__01142BA1">
+            <End Role="Enrollment" EntitySet="Enrollment" />
+            <End Role="StudentEvaluation" EntitySet="StudentEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SubKPI__KPIID__628FA481" Association="Self.FK__SubKPI__KPIID__628FA481">
+            <End Role="KPI" EntitySet="KPI" />
+            <End Role="SubKPI" EntitySet="SubKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KPIScore__empID__6D0D32F4" Association="Self.FK__KPIScore__empID__6D0D32F4">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="KPIScore" EntitySet="KPIScore" />
+          </AssociationSet>
+          <AssociationSet Name="FK__KPIScore__evalua__6E01572D" Association="Self.FK__KPIScore__evalua__6E01572D">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="KPIScore" EntitySet="KPIScore" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__evalu__08B54D69" Association="Self.FK__PeerEvalu__evalu__08B54D69">
+            <End Role="PeerEvaluator" EntitySet="PeerEvaluator" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__evalu__09A971A2" Association="Self.FK__PeerEvalu__evalu__09A971A2">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__quest__0A9D95DB" Association="Self.FK__PeerEvalu__quest__0A9D95DB">
+            <End Role="Questionare" EntitySet="Questionare" />
+            <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__sessi__05D8E0BE" Association="Self.FK__PeerEvalu__sessi__05D8E0BE">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="PeerEvaluator" EntitySet="PeerEvaluator" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PeerEvalu__teach__04E4BC85" Association="Self.FK__PeerEvalu__teach__04E4BC85">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="PeerEvaluator" EntitySet="PeerEvaluator" />
+          </AssociationSet>
+          <AssociationSet Name="FK__StudentEv__quest__02084FDA" Association="Self.FK__StudentEv__quest__02084FDA">
+            <End Role="Questionare" EntitySet="Questionare" />
+            <End Role="StudentEvaluation" EntitySet="StudentEvaluation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Student__admissi__71D1E811" Association="Self.FK__Student__admissi__71D1E811">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Student__userID__70DDC3D8" Association="Self.FK__Student__userID__70DDC3D8">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Student" EntitySet="Student" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Teacher__userID__74AE54BC" Association="Self.FK__Teacher__userID__74AE54BC">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Teacher" EntitySet="Teacher" />
+          </AssociationSet>
+          <EntitySet Name="Questions" EntityType="fypapiv1Model.Questions" />
+          <AssociationSet Name="FK_Questions_Questionare" Association="fypapiv1Model.FK_Questions_Questionare">
+            <End Role="Questionare" EntitySet="Questionare" />
+            <End Role="Questions" EntitySet="Questions" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Questions">
+          <Key>
+            <PropertyRef Name="QuestionID" />
+          </Key>
+          <Property Name="QuestionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="QuestionareID" Type="Int32" Nullable="false" />
+          <Property Name="QuestionText" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Questionare" Relationship="fypapiv1Model.FK_Questions_Questionare" FromRole="Questions" ToRole="Questionare" />
+        </EntityType>
+        <Association Name="FK_Questions_Questionare">
+          <End Type="fypapiv1Model.Questionare" Role="Questionare" Multiplicity="1" />
+          <End Type="fypapiv1Model.Questions" Role="Questions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Questionare">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Questions">
+              <PropertyRef Name="QuestionareID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="fypapiv1ModelStoreContainer" CdmEntityContainer="fypapiv1Entities">
+          <EntitySetMapping Name="Course">
+            <EntityTypeMapping TypeName="fypapiv1Model.Course">
+              <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="title" ColumnName="title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CourseAllocation">
+            <EntityTypeMapping TypeName="fypapiv1Model.CourseAllocation">
+              <MappingFragment StoreEntitySet="CourseAllocation">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="teacherID" ColumnName="teacherID" />
+                <ScalarProperty Name="courseCode" ColumnName="courseCode" />
+                <ScalarProperty Name="sessionID" ColumnName="sessionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeeType">
+            <EntityTypeMapping TypeName="fypapiv1Model.EmployeeType">
+              <MappingFragment StoreEntitySet="EmployeeType">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="type" ColumnName="type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeSessionKPI">
+            <EntityTypeMapping TypeName="fypapiv1Model.EmployeSessionKPI">
+              <MappingFragment StoreEntitySet="EmployeSessionKPI">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="KPIID" ColumnName="KPIID" />
+                <ScalarProperty Name="SubKPIID" ColumnName="SubKPIID" />
+                <ScalarProperty Name="SessionID" ColumnName="SessionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Enrollment">
+            <EntityTypeMapping TypeName="fypapiv1Model.Enrollment">
+              <MappingFragment StoreEntitySet="Enrollment">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="studentID" ColumnName="studentID" />
+                <ScalarProperty Name="teacherID" ColumnName="teacherID" />
+                <ScalarProperty Name="courseCode" ColumnName="courseCode" />
+                <ScalarProperty Name="sessionID" ColumnName="sessionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KPI">
+            <EntityTypeMapping TypeName="fypapiv1Model.KPI">
+              <MappingFragment StoreEntitySet="KPI">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="KPIScore">
+            <EntityTypeMapping TypeName="fypapiv1Model.KPIScore">
+              <MappingFragment StoreEntitySet="KPIScore">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="empKPIID" ColumnName="empKPIID" />
+                <ScalarProperty Name="empID" ColumnName="empID" />
+                <ScalarProperty Name="score" ColumnName="score" />
+                <ScalarProperty Name="evaluatorID" ColumnName="evaluatorID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PeerEvaluation">
+            <EntityTypeMapping TypeName="fypapiv1Model.PeerEvaluation">
+              <MappingFragment StoreEntitySet="PeerEvaluation">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="evaluatorID" ColumnName="evaluatorID" />
+                <ScalarProperty Name="evaluateeID" ColumnName="evaluateeID" />
+                <ScalarProperty Name="questionID" ColumnName="questionID" />
+                <ScalarProperty Name="courseCode" ColumnName="courseCode" />
+                <ScalarProperty Name="score" ColumnName="score" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PeerEvaluator">
+            <EntityTypeMapping TypeName="fypapiv1Model.PeerEvaluator">
+              <MappingFragment StoreEntitySet="PeerEvaluator">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="teacherID" ColumnName="teacherID" />
+                <ScalarProperty Name="sessionID" ColumnName="sessionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Questionare">
+            <EntityTypeMapping TypeName="fypapiv1Model.Questionare">
+              <MappingFragment StoreEntitySet="Questionare">
+                <ScalarProperty Name="flag" ColumnName="flag" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="type" ColumnName="type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Session">
+            <EntityTypeMapping TypeName="fypapiv1Model.Session">
+              <MappingFragment StoreEntitySet="Session">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Student">
+            <EntityTypeMapping TypeName="fypapiv1Model.Student">
+              <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="admissionSessionID" ColumnName="admissionSessionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentEvaluation">
+            <EntityTypeMapping TypeName="fypapiv1Model.StudentEvaluation">
+              <MappingFragment StoreEntitySet="StudentEvaluation">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="enrollmentID" ColumnName="enrollmentID" />
+                <ScalarProperty Name="questionID" ColumnName="questionID" />
+                <ScalarProperty Name="score" ColumnName="score" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SubKPI">
+            <EntityTypeMapping TypeName="fypapiv1Model.SubKPI">
+              <MappingFragment StoreEntitySet="SubKPI">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="KPIID" ColumnName="KPIID" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Teacher">
+            <EntityTypeMapping TypeName="fypapiv1Model.Teacher">
+              <MappingFragment StoreEntitySet="Teacher">
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="department" ColumnName="department" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="fypapiv1Model.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="role" ColumnName="role" />
+                <ScalarProperty Name="profileImagePath" ColumnName="profileImagePath" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Questions">
+            <EntityTypeMapping TypeName="fypapiv1Model.Questions">
+              <MappingFragment StoreEntitySet="Questions">
+                <ScalarProperty Name="QuestionText" ColumnName="QuestionText" />
+                <ScalarProperty Name="QuestionareID" ColumnName="QuestionareID" />
+                <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

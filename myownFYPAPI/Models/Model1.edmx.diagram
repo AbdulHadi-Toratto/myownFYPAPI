@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c77306f88fb9412fb76c966069dc5a72" Name="Diagram1" ZoomLevel="61">
+        <EntityTypeShape EntityType="fypapiv1Model.Course" Width="1.5" PointX="6" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.CourseAllocation" Width="1.5" PointX="5.25" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.EmployeeType" Width="1.5" PointX="2.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.EmployeSessionKPI" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.Enrollment" Width="1.5" PointX="8.25" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.KPI" Width="1.5" PointX="1.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.KPIScore" Width="1.5" PointX="3" PointY="9.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.PeerEvaluation" Width="1.5" PointX="8.25" PointY="16" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.PeerEvaluator" Width="1.5" PointX="5.25" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.Questionare" Width="1.5" PointX="8.25" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.Session" Width="1.5" PointX="1.5" PointY="21.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.Student" Width="1.5" PointX="6" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.StudentEvaluation" Width="1.5" PointX="10.5" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.SubKPI" Width="1.5" PointX="1.5" PointY="13.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.Teacher" Width="1.5" PointX="3" PointY="16.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.Users" Width="1.5" PointX="0.75" PointY="9.875" IsExpanded="true" />
+        <AssociationConnector Association="fypapiv1Model.FK__CourseAll__cours__0F624AF8" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__Enrollmen__cours__7B5B524B" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__PeerEvalu__cours__0B91BA14" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__CourseAll__sessi__10566F31" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__CourseAll__teach__0E6E26BF" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__EmployeSe__KPIID__656C112C" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__EmployeSe__Sessi__6754599E" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__EmployeSe__SubKP__66603565" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__KPIScore__empKPI__6C190EBB" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__Enrollmen__sessi__7C4F7684" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__Enrollmen__stude__797309D9" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__Enrollmen__teach__7A672E12" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__StudentEv__enrol__01142BA1" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__SubKPI__KPIID__628FA481" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__KPIScore__empID__6D0D32F4" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__KPIScore__evalua__6E01572D" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__PeerEvalu__evalu__08B54D69" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__PeerEvalu__evalu__09A971A2" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__PeerEvalu__quest__0A9D95DB" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__PeerEvalu__sessi__05D8E0BE" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__PeerEvalu__teach__04E4BC85" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__StudentEv__quest__02084FDA" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__Student__admissi__71D1E811" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__Student__userID__70DDC3D8" ManuallyRouted="false" />
+        <AssociationConnector Association="fypapiv1Model.FK__Teacher__userID__74AE54BC" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="fypapiv1Model.Questions" Width="1.5" PointX="10.5" PointY="8.625" />
+        <AssociationConnector Association="fypapiv1Model.FK_Questions_Questionare" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
