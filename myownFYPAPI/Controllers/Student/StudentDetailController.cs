@@ -31,7 +31,7 @@ namespace myownFYPAPI.Controllers.Student
                     TeacherName = e.Teacher.name,
                     SessionName = e.Session.name
                 })
-                
+                .ToList();
 
             if (result.Count == 0)
                 return NotFound();
@@ -40,14 +40,25 @@ namespace myownFYPAPI.Controllers.Student
         }
 
         [HttpGet]
-        [Route("GetActiveQuestionnaire")]
-        public IHttpActionResult GetActiveQuestionnaire()
+        [Route("GetStudentName/{studentId}")]
+        public IHttpActionResult GetStudentName(string studentId)
+        {
+            var student = db.Student.FirstOrDefault(s => s.userID == studentId);
+            if (student == null)
+                return NotFound();
+            return Ok(student.name);
+        }
+
+        [HttpGet]
+        [Route("GetActiveQuestionnaire/{type}")]
+        public IHttpActionResult GetActiveQuestionnaire(string type)
         {
             try
             {
-                
+                // Get Questionnaire where flag = '1'
                 var questionnaire = db.Questionare
-                    .Where(q => q.flag == "1")
+                    .Include("Questions")
+                    .Where(q => q.flag == "1" && q.type == type )
                     .Select(q => new
                     {
                         QuestionareID = q.id,
