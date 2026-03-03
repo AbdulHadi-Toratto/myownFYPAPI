@@ -50,5 +50,55 @@ namespace myownFYPAPI.Controllers.Teacher
             return Ok(data);
         }
 
+
+        [HttpPost]
+        [Route("SubmitPeerEvaluation")]
+        public IHttpActionResult SubmitEvaluation([FromBody] List<PeerEvaluation> evaluations)
+        {
+            if (evaluations == null || !evaluations.Any())
+                return BadRequest("Invalid submission");
+
+            foreach (var eval in evaluations)
+            {
+                var record = new PeerEvaluation
+                {
+                    evaluatorID = eval.evaluatorID,
+                    evaluateeID = eval.evaluateeID,
+                    questionID = eval.questionID,
+                    courseCode = eval.courseCode,
+                    score = eval.score
+                };
+
+                db.PeerEvaluation.Add(record);
+            }
+
+            db.SaveChanges();
+
+            return Ok(new { success = true });
+        }
+
+
+        [HttpGet]
+        [Route("GetPeerID")]
+        public IHttpActionResult GetPeerEvaluatorID(string userId)
+        {
+            try
+            {
+                // Get the PeerEvaluator entry for this teacher (you may also filter by current session)
+                var peerEvaluator = db.PeerEvaluator
+                    .FirstOrDefault(pe => pe.teacherID.Trim().ToLower() == userId.Trim().ToLower());
+
+                if (peerEvaluator == null)
+                    return Ok(new { peerEvaluatorID = (int?)null });
+
+                return Ok(new { peerEvaluatorID = peerEvaluator.id });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+
     }
 }

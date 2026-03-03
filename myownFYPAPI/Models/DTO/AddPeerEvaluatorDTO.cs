@@ -8,6 +8,6 @@ namespace myownFYPAPI.Models.DTO
     public class AddPeerEvaluatorDTO
     {
         public int SessionId { get; set; }
-        public List<int> TeacherIds { get; set; }
+        public List<String> TeacherIds { get; set; }
     }
 }

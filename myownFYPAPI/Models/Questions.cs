@@ -14,10 +14,18 @@ namespace myownFYPAPI.Models
     
     public partial class Questions
     {
+        public Questions()
+        {
+            this.StudentEvaluation = new HashSet<StudentEvaluation>();
+            this.PeerEvaluation = new HashSet<PeerEvaluation>();
+        }
+    
         public int QuestionID { get; set; }
         public int QuestionareID { get; set; }
         public string QuestionText { get; set; }
     
         public virtual Questionare Questionare { get; set; }
+        public virtual ICollection<StudentEvaluation> StudentEvaluation { get; set; }
+        public virtual ICollection<PeerEvaluation> PeerEvaluation { get; set; }
     }
 }
