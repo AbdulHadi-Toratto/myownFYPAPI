@@ -18,12 +18,16 @@ namespace myownFYPAPI.Models
         {
             this.EmployeSessionKPI = new HashSet<EmployeSessionKPI>();
             this.SubKPI = new HashSet<SubKPI>();
+            this.SessionKPIWeight = new HashSet<SessionKPIWeight>();
         }
     
         public int id { get; set; }
         public string name { get; set; }
+        public Nullable<int> KPI_Employeetype { get; set; }
     
         public virtual ICollection<EmployeSessionKPI> EmployeSessionKPI { get; set; }
         public virtual ICollection<SubKPI> SubKPI { get; set; }
+        public virtual EmployeeType EmployeeType { get; set; }
+        public virtual ICollection<SessionKPIWeight> SessionKPIWeight { get; set; }
     }
 }

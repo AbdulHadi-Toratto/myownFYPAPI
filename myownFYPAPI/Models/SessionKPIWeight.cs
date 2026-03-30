@@ -12,23 +12,16 @@ namespace myownFYPAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class EmployeSessionKPI
+    public partial class SessionKPIWeight
     {
-        public EmployeSessionKPI()
-        {
-            this.KPIScore = new HashSet<KPIScore>();
-        }
-    
         public int id { get; set; }
+        public Nullable<int> SessionID { get; set; }
         public Nullable<int> KPIID { get; set; }
         public Nullable<int> SubKPIID { get; set; }
-        public Nullable<int> SessionID { get; set; }
-        public Nullable<int> EmployeeTypeID { get; set; }
+        public Nullable<int> Weight { get; set; }
     
         public virtual KPI KPI { get; set; }
         public virtual Session Session { get; set; }
         public virtual SubKPI SubKPI { get; set; }
-        public virtual ICollection<KPIScore> KPIScore { get; set; }
-        public virtual EmployeeType EmployeeType { get; set; }
     }
 }

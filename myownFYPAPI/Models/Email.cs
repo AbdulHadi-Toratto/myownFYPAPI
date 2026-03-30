@@ -12,20 +12,10 @@ namespace myownFYPAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SubKPI
+    public partial class Email
     {
-        public SubKPI()
-        {
-            this.EmployeSessionKPI = new HashSet<EmployeSessionKPI>();
-            this.SessionKPIWeight = new HashSet<SessionKPIWeight>();
-        }
-    
         public int id { get; set; }
-        public Nullable<int> KPIID { get; set; }
-        public string name { get; set; }
-    
-        public virtual ICollection<EmployeSessionKPI> EmployeSessionKPI { get; set; }
-        public virtual KPI KPI { get; set; }
-        public virtual ICollection<SessionKPIWeight> SessionKPIWeight { get; set; }
+        public string mail { get; set; }
+        public Nullable<bool> isActive { get; set; }
     }
 }

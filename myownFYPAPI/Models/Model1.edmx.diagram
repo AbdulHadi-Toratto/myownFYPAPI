@@ -7,7 +7,7 @@
       <Diagram DiagramId="c77306f88fb9412fb76c966069dc5a72" Name="Diagram1" ZoomLevel="105">
         <EntityTypeShape EntityType="fypapiv1Model.Course" Width="1.5" PointX="6" PointY="6.375" IsExpanded="true" />
         <EntityTypeShape EntityType="fypapiv1Model.CourseAllocation" Width="1.5" PointX="5.25" PointY="16.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="fypapiv1Model.EmployeeType" Width="1.5" PointX="2.75" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="fypapiv1Model.EmployeeType" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
         <EntityTypeShape EntityType="fypapiv1Model.EmployeSessionKPI" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="fypapiv1Model.Enrollment" Width="1.5" PointX="8.25" PointY="12" IsExpanded="true" />
         <EntityTypeShape EntityType="fypapiv1Model.KPI" Width="1.5" PointX="1.5" PointY="0.75" IsExpanded="true" />
@@ -50,6 +50,13 @@
         <AssociationConnector Association="fypapiv1Model.FK_Questions_Questionare" />
         <AssociationConnector Association="fypapiv1Model.FK_StudentEvaluation_Questions" />
         <AssociationConnector Association="fypapiv1Model.FK_PeerEvaluation_Questions" />
+        <EntityTypeShape EntityType="fypapiv1Model.Email" Width="1.5" PointX="4.375" PointY="0.75" />
+        <AssociationConnector Association="fypapiv1Model.FK__EmployeSe__Emplo__607251E5" />
+        <AssociationConnector Association="fypapiv1Model.FK_KPI_EmployeeType" />
+        <EntityTypeShape EntityType="fypapiv1Model.SessionKPIWeight" Width="1.5" PointX="3.75" PointY="6" />
+        <AssociationConnector Association="fypapiv1Model.FK__SessionKP__KPIID__65370702" />
+        <AssociationConnector Association="fypapiv1Model.FK__SessionKP__Sessi__6442E2C9" />
+        <AssociationConnector Association="fypapiv1Model.FK__SessionKP__SubKP__662B2B3B" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -42,5 +42,7 @@ namespace myownFYPAPI.Models
         public DbSet<Teacher> Teacher { get; set; }
         public DbSet<Users> Users { get; set; }
         public DbSet<Questions> Questions { get; set; }
+        public DbSet<Email> Email { get; set; }
+        public DbSet<SessionKPIWeight> SessionKPIWeight { get; set; }
     }
 }

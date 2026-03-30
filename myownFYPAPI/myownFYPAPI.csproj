@@ -81,6 +81,7 @@
     <Reference Include="System.Text.Encoding.CodePages, Version=10.0.0.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encoding.CodePages.10.0.2\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -191,7 +192,9 @@
     <Compile Include="Controllers\Datacell\ExcelUpload\EnrollementController.cs" />
     <Compile Include="Controllers\Datacell\ExcelUpload\StudentController.cs" />
     <Compile Include="Controllers\Datacell\ExcelUpload\TeacherController.cs" />
+    <Compile Include="Controllers\Director\EmailController.cs" />
     <Compile Include="Controllers\Director\QuestionnaireController.cs" />
+    <Compile Include="Controllers\HOD\KpiController.cs" />
     <Compile Include="Controllers\HOD\PeerEvaluatorController.cs" />
     <Compile Include="Controllers\Login\UsersController.cs" />
     <Compile Include="Controllers\Student\StudentDetailController.cs" />
@@ -205,6 +208,7 @@
     <Compile Include="Models\CourseAllocation.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DTO\AddKPIDto.cs" />
     <Compile Include="Models\DTO\AddPeerEvaluatorDTO.cs" />
     <Compile Include="Models\DTO\ConfidentialEvaluationDto.cs" />
     <Compile Include="Models\DTO\QestionnaireListDto.cs" />
@@ -212,6 +216,9 @@
     <Compile Include="Models\DTO\SaveQuestionnaireChangesDto.cs" />
     <Compile Include="Models\DTO\StudentEnrollementDto.cs" />
     <Compile Include="Models\DTO\ToggleQuestionnaireDto.cs" />
+    <Compile Include="Models\Email.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\EmployeeType.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -255,6 +262,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Session.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SessionKPIWeight.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Student.cs">

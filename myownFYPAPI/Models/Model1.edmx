@@ -21,6 +21,14 @@
           <Property Name="courseCode" Type="varchar" MaxLength="20" />
           <Property Name="sessionID" Type="int" />
         </EntityType>
+        <EntityType Name="Email">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="mail" Type="varchar" MaxLength="100" />
+          <Property Name="isActive" Type="bit" />
+        </EntityType>
         <EntityType Name="EmployeeType">
           <Key>
             <PropertyRef Name="id" />
@@ -36,6 +44,7 @@
           <Property Name="KPIID" Type="int" />
           <Property Name="SubKPIID" Type="int" />
           <Property Name="SessionID" Type="int" />
+          <Property Name="EmployeeTypeID" Type="int" />
         </EntityType>
         <EntityType Name="Enrollment">
           <Key>
@@ -53,6 +62,7 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="50" />
+          <Property Name="KPI_Employeetype" Type="int" />
         </EntityType>
         <EntityType Name="KPIScore">
           <Key>
@@ -105,6 +115,16 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="SessionKPIWeight">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SessionID" Type="int" />
+          <Property Name="KPIID" Type="int" />
+          <Property Name="SubKPIID" Type="int" />
+          <Property Name="Weight" Type="int" />
         </EntityType>
         <EntityType Name="Student">
           <Key>
@@ -183,6 +203,18 @@
             </Principal>
             <Dependent Role="CourseAllocation">
               <PropertyRef Name="teacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__EmployeSe__Emplo__607251E5">
+          <End Role="EmployeeType" Type="Self.EmployeeType" Multiplicity="0..1" />
+          <End Role="EmployeSessionKPI" Type="Self.EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="EmployeeTypeID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -366,6 +398,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__SessionKP__KPIID__65370702">
+          <End Role="KPI" Type="Self.KPI" Multiplicity="0..1" />
+          <End Role="SessionKPIWeight" Type="Self.SessionKPIWeight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SessionKPIWeight">
+              <PropertyRef Name="KPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SessionKP__Sessi__6442E2C9">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="SessionKPIWeight" Type="Self.SessionKPIWeight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SessionKPIWeight">
+              <PropertyRef Name="SessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SessionKP__SubKP__662B2B3B">
+          <End Role="SubKPI" Type="Self.SubKPI" Multiplicity="0..1" />
+          <End Role="SessionKPIWeight" Type="Self.SessionKPIWeight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubKPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SessionKPIWeight">
+              <PropertyRef Name="SubKPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Student__admissi__71D1E811">
           <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
           <End Role="Student" Type="Self.Student" Multiplicity="*" />
@@ -426,6 +494,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_KPI_EmployeeType">
+          <End Role="EmployeeType" Type="Self.EmployeeType" Multiplicity="0..1" />
+          <End Role="KPI" Type="Self.KPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPI">
+              <PropertyRef Name="KPI_Employeetype" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PeerEvaluation_Questions">
           <End Role="Questions" Type="Self.Questions" Multiplicity="0..1" />
           <End Role="PeerEvaluation" Type="Self.PeerEvaluation" Multiplicity="*" />
@@ -465,6 +545,7 @@
         <EntityContainer Name="fypapiv1ModelStoreContainer">
           <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseAllocation" EntityType="Self.CourseAllocation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Email" EntityType="Self.Email" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmployeeType" EntityType="Self.EmployeeType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmployeSessionKPI" EntityType="Self.EmployeSessionKPI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Enrollment" EntityType="Self.Enrollment" Schema="dbo" store:Type="Tables" />
@@ -475,6 +556,7 @@
           <EntitySet Name="Questionare" EntityType="Self.Questionare" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Session" EntityType="Self.Session" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SessionKPIWeight" EntityType="Self.SessionKPIWeight" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Student" EntityType="Self.Student" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StudentEvaluation" EntityType="Self.StudentEvaluation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubKPI" EntityType="Self.SubKPI" Schema="dbo" store:Type="Tables" />
@@ -491,6 +573,10 @@
           <AssociationSet Name="FK__CourseAll__teach__0E6E26BF" Association="Self.FK__CourseAll__teach__0E6E26BF">
             <End Role="Teacher" EntitySet="Teacher" />
             <End Role="CourseAllocation" EntitySet="CourseAllocation" />
+          </AssociationSet>
+          <AssociationSet Name="FK__EmployeSe__Emplo__607251E5" Association="Self.FK__EmployeSe__Emplo__607251E5">
+            <End Role="EmployeeType" EntitySet="EmployeeType" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
           </AssociationSet>
           <AssociationSet Name="FK__EmployeSe__KPIID__656C112C" Association="Self.FK__EmployeSe__KPIID__656C112C">
             <End Role="KPI" EntitySet="KPI" />
@@ -552,6 +638,18 @@
             <End Role="Teacher" EntitySet="Teacher" />
             <End Role="PeerEvaluator" EntitySet="PeerEvaluator" />
           </AssociationSet>
+          <AssociationSet Name="FK__SessionKP__KPIID__65370702" Association="Self.FK__SessionKP__KPIID__65370702">
+            <End Role="KPI" EntitySet="KPI" />
+            <End Role="SessionKPIWeight" EntitySet="SessionKPIWeight" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SessionKP__Sessi__6442E2C9" Association="Self.FK__SessionKP__Sessi__6442E2C9">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="SessionKPIWeight" EntitySet="SessionKPIWeight" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SessionKP__SubKP__662B2B3B" Association="Self.FK__SessionKP__SubKP__662B2B3B">
+            <End Role="SubKPI" EntitySet="SubKPI" />
+            <End Role="SessionKPIWeight" EntitySet="SessionKPIWeight" />
+          </AssociationSet>
           <AssociationSet Name="FK__Student__admissi__71D1E811" Association="Self.FK__Student__admissi__71D1E811">
             <End Role="Session" EntitySet="Session" />
             <End Role="Student" EntitySet="Student" />
@@ -571,6 +669,10 @@
           <AssociationSet Name="FK__Teacher__userID__74AE54BC" Association="Self.FK__Teacher__userID__74AE54BC">
             <End Role="Users" EntitySet="Users" />
             <End Role="Teacher" EntitySet="Teacher" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KPI_EmployeeType" Association="Self.FK_KPI_EmployeeType">
+            <End Role="EmployeeType" EntitySet="EmployeeType" />
+            <End Role="KPI" EntitySet="KPI" />
           </AssociationSet>
           <AssociationSet Name="FK_PeerEvaluation_Questions" Association="Self.FK_PeerEvaluation_Questions">
             <End Role="Questions" EntitySet="Questions" />
@@ -617,6 +719,8 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="EmployeSessionKPI" Relationship="fypapiv1Model.FK__EmployeSe__Emplo__607251E5" FromRole="EmployeeType" ToRole="EmployeSessionKPI" />
+          <NavigationProperty Name="KPI" Relationship="fypapiv1Model.FK_KPI_EmployeeType" FromRole="EmployeeType" ToRole="KPI" />
         </EntityType>
         <EntityType Name="EmployeSessionKPI">
           <Key>
@@ -630,6 +734,8 @@
           <NavigationProperty Name="Session" Relationship="Self.FK__EmployeSe__Sessi__6754599E" FromRole="EmployeSessionKPI" ToRole="Session" />
           <NavigationProperty Name="SubKPI" Relationship="Self.FK__EmployeSe__SubKP__66603565" FromRole="EmployeSessionKPI" ToRole="SubKPI" />
           <NavigationProperty Name="KPIScore" Relationship="Self.FK__KPIScore__empKPI__6C190EBB" FromRole="EmployeSessionKPI" ToRole="KPIScore" />
+          <Property Name="EmployeeTypeID" Type="Int32" />
+          <NavigationProperty Name="EmployeeType" Relationship="fypapiv1Model.FK__EmployeSe__Emplo__607251E5" FromRole="EmployeSessionKPI" ToRole="EmployeeType" />
         </EntityType>
         <EntityType Name="Enrollment">
           <Key>
@@ -654,6 +760,9 @@
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="EmployeSessionKPI" Relationship="Self.FK__EmployeSe__KPIID__656C112C" FromRole="KPI" ToRole="EmployeSessionKPI" />
           <NavigationProperty Name="SubKPI" Relationship="Self.FK__SubKPI__KPIID__628FA481" FromRole="KPI" ToRole="SubKPI" />
+          <Property Name="KPI_Employeetype" Type="Int32" />
+          <NavigationProperty Name="EmployeeType" Relationship="fypapiv1Model.FK_KPI_EmployeeType" FromRole="KPI" ToRole="EmployeeType" />
+          <NavigationProperty Name="SessionKPIWeight" Relationship="fypapiv1Model.FK__SessionKP__KPIID__65370702" FromRole="KPI" ToRole="SessionKPIWeight" />
         </EntityType>
         <EntityType Name="KPIScore">
           <Key>
@@ -716,6 +825,7 @@
           <NavigationProperty Name="Enrollment" Relationship="Self.FK__Enrollmen__sessi__7C4F7684" FromRole="Session" ToRole="Enrollment" />
           <NavigationProperty Name="PeerEvaluator" Relationship="Self.FK__PeerEvalu__sessi__05D8E0BE" FromRole="Session" ToRole="PeerEvaluator" />
           <NavigationProperty Name="Student" Relationship="Self.FK__Student__admissi__71D1E811" FromRole="Session" ToRole="Student" />
+          <NavigationProperty Name="SessionKPIWeight" Relationship="fypapiv1Model.FK__SessionKP__Sessi__6442E2C9" FromRole="Session" ToRole="SessionKPIWeight" />
         </EntityType>
         <EntityType Name="Student">
           <Key>
@@ -749,6 +859,7 @@
           <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="EmployeSessionKPI" Relationship="Self.FK__EmployeSe__SubKP__66603565" FromRole="SubKPI" ToRole="EmployeSessionKPI" />
           <NavigationProperty Name="KPI" Relationship="Self.FK__SubKPI__KPIID__628FA481" FromRole="SubKPI" ToRole="KPI" />
+          <NavigationProperty Name="SessionKPIWeight" Relationship="fypapiv1Model.FK__SessionKP__SubKP__662B2B3B" FromRole="SubKPI" ToRole="SessionKPIWeight" />
         </EntityType>
         <EntityType Name="Teacher">
           <Key>
@@ -1207,6 +1318,28 @@
             <End Role="Questions" EntitySet="Questions" />
             <End Role="PeerEvaluation" EntitySet="PeerEvaluation" />
           </AssociationSet>
+          <EntitySet Name="Email" EntityType="fypapiv1Model.Email" />
+          <AssociationSet Name="FK__EmployeSe__Emplo__607251E5" Association="fypapiv1Model.FK__EmployeSe__Emplo__607251E5">
+            <End Role="EmployeeType" EntitySet="EmployeeType" />
+            <End Role="EmployeSessionKPI" EntitySet="EmployeSessionKPI" />
+          </AssociationSet>
+          <AssociationSet Name="FK_KPI_EmployeeType" Association="fypapiv1Model.FK_KPI_EmployeeType">
+            <End Role="EmployeeType" EntitySet="EmployeeType" />
+            <End Role="KPI" EntitySet="KPI" />
+          </AssociationSet>
+          <EntitySet Name="SessionKPIWeight" EntityType="fypapiv1Model.SessionKPIWeight" />
+          <AssociationSet Name="FK__SessionKP__KPIID__65370702" Association="fypapiv1Model.FK__SessionKP__KPIID__65370702">
+            <End Role="KPI" EntitySet="KPI" />
+            <End Role="SessionKPIWeight" EntitySet="SessionKPIWeight" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SessionKP__Sessi__6442E2C9" Association="fypapiv1Model.FK__SessionKP__Sessi__6442E2C9">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="SessionKPIWeight" EntitySet="SessionKPIWeight" />
+          </AssociationSet>
+          <AssociationSet Name="FK__SessionKP__SubKP__662B2B3B" Association="fypapiv1Model.FK__SessionKP__SubKP__662B2B3B">
+            <End Role="SubKPI" EntitySet="SubKPI" />
+            <End Role="SessionKPIWeight" EntitySet="SessionKPIWeight" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Questions">
           <Key>
@@ -1255,6 +1388,87 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Email">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="mail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="isActive" Type="Boolean" />
+        </EntityType>
+        <Association Name="FK__EmployeSe__Emplo__607251E5">
+          <End Type="fypapiv1Model.EmployeeType" Role="EmployeeType" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.EmployeSessionKPI" Role="EmployeSessionKPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="EmployeSessionKPI">
+              <PropertyRef Name="EmployeeTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_KPI_EmployeeType">
+          <End Type="fypapiv1Model.EmployeeType" Role="EmployeeType" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.KPI" Role="KPI" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="KPI">
+              <PropertyRef Name="KPI_Employeetype" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SessionKPIWeight">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SessionID" Type="Int32" />
+          <Property Name="KPIID" Type="Int32" />
+          <Property Name="SubKPIID" Type="Int32" />
+          <Property Name="Weight" Type="Int32" />
+          <NavigationProperty Name="KPI" Relationship="fypapiv1Model.FK__SessionKP__KPIID__65370702" FromRole="SessionKPIWeight" ToRole="KPI" />
+          <NavigationProperty Name="Session" Relationship="fypapiv1Model.FK__SessionKP__Sessi__6442E2C9" FromRole="SessionKPIWeight" ToRole="Session" />
+          <NavigationProperty Name="SubKPI" Relationship="fypapiv1Model.FK__SessionKP__SubKP__662B2B3B" FromRole="SessionKPIWeight" ToRole="SubKPI" />
+        </EntityType>
+        <Association Name="FK__SessionKP__KPIID__65370702">
+          <End Type="fypapiv1Model.KPI" Role="KPI" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.SessionKPIWeight" Role="SessionKPIWeight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="KPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SessionKPIWeight">
+              <PropertyRef Name="KPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SessionKP__Sessi__6442E2C9">
+          <End Type="fypapiv1Model.Session" Role="Session" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.SessionKPIWeight" Role="SessionKPIWeight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SessionKPIWeight">
+              <PropertyRef Name="SessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__SessionKP__SubKP__662B2B3B">
+          <End Type="fypapiv1Model.SubKPI" Role="SubKPI" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.SessionKPIWeight" Role="SessionKPIWeight" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SubKPI">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="SessionKPIWeight">
+              <PropertyRef Name="SubKPIID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1290,6 +1504,7 @@
           <EntitySetMapping Name="EmployeSessionKPI">
             <EntityTypeMapping TypeName="fypapiv1Model.EmployeSessionKPI">
               <MappingFragment StoreEntitySet="EmployeSessionKPI">
+                <ScalarProperty Name="EmployeeTypeID" ColumnName="EmployeeTypeID" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="KPIID" ColumnName="KPIID" />
                 <ScalarProperty Name="SubKPIID" ColumnName="SubKPIID" />
@@ -1311,6 +1526,7 @@
           <EntitySetMapping Name="KPI">
             <EntityTypeMapping TypeName="fypapiv1Model.KPI">
               <MappingFragment StoreEntitySet="KPI">
+                <ScalarProperty Name="KPI_Employeetype" ColumnName="KPI_Employeetype" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
@@ -1420,6 +1636,26 @@
                 <ScalarProperty Name="QuestionText" ColumnName="QuestionText" />
                 <ScalarProperty Name="QuestionareID" ColumnName="QuestionareID" />
                 <ScalarProperty Name="QuestionID" ColumnName="QuestionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Email">
+            <EntityTypeMapping TypeName="fypapiv1Model.Email">
+              <MappingFragment StoreEntitySet="Email">
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="mail" ColumnName="mail" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SessionKPIWeight">
+            <EntityTypeMapping TypeName="fypapiv1Model.SessionKPIWeight">
+              <MappingFragment StoreEntitySet="SessionKPIWeight">
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="SubKPIID" ColumnName="SubKPIID" />
+                <ScalarProperty Name="KPIID" ColumnName="KPIID" />
+                <ScalarProperty Name="SessionID" ColumnName="SessionID" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

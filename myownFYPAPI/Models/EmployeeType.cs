@@ -14,7 +14,16 @@ namespace myownFYPAPI.Models
     
     public partial class EmployeeType
     {
+        public EmployeeType()
+        {
+            this.EmployeSessionKPI = new HashSet<EmployeSessionKPI>();
+            this.KPI = new HashSet<KPI>();
+        }
+    
         public int id { get; set; }
         public string type { get; set; }
+    
+        public virtual ICollection<EmployeSessionKPI> EmployeSessionKPI { get; set; }
+        public virtual ICollection<KPI> KPI { get; set; }
     }
 }
