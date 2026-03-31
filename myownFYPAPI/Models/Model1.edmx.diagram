@@ -57,6 +57,7 @@
         <AssociationConnector Association="fypapiv1Model.FK__SessionKP__KPIID__65370702" />
         <AssociationConnector Association="fypapiv1Model.FK__SessionKP__Sessi__6442E2C9" />
         <AssociationConnector Association="fypapiv1Model.FK__SessionKP__SubKP__662B2B3B" />
+        <AssociationConnector Association="fypapiv1Model.FK_SessionID" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

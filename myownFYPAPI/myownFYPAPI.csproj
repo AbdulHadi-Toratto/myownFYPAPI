@@ -198,6 +198,7 @@
     <Compile Include="Controllers\HOD\PeerEvaluatorController.cs" />
     <Compile Include="Controllers\Login\UsersController.cs" />
     <Compile Include="Controllers\Student\StudentDetailController.cs" />
+    <Compile Include="Controllers\Teacher\OwnPerformanceController.cs" />
     <Compile Include="Controllers\Teacher\TeacherDashboardController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -211,6 +212,7 @@
     <Compile Include="Models\DTO\AddKPIDto.cs" />
     <Compile Include="Models\DTO\AddPeerEvaluatorDTO.cs" />
     <Compile Include="Models\DTO\ConfidentialEvaluationDto.cs" />
+    <Compile Include="Models\DTO\PerformanceDto.cs" />
     <Compile Include="Models\DTO\QestionnaireListDto.cs" />
     <Compile Include="Models\DTO\QuestionCreateDto.cs" />
     <Compile Include="Models\DTO\SaveQuestionnaireChangesDto.cs" />

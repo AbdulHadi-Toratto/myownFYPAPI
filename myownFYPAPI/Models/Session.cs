@@ -22,6 +22,7 @@ namespace myownFYPAPI.Models
             this.PeerEvaluator = new HashSet<PeerEvaluator>();
             this.Student = new HashSet<Student>();
             this.SessionKPIWeight = new HashSet<SessionKPIWeight>();
+            this.StudentEvaluation = new HashSet<StudentEvaluation>();
         }
     
         public int id { get; set; }
@@ -33,5 +34,6 @@ namespace myownFYPAPI.Models
         public virtual ICollection<PeerEvaluator> PeerEvaluator { get; set; }
         public virtual ICollection<Student> Student { get; set; }
         public virtual ICollection<SessionKPIWeight> SessionKPIWeight { get; set; }
+        public virtual ICollection<StudentEvaluation> StudentEvaluation { get; set; }
     }
 }
