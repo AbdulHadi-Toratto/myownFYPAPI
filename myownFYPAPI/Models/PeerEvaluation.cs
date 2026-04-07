@@ -20,10 +20,12 @@ namespace myownFYPAPI.Models
         public Nullable<int> questionID { get; set; }
         public string courseCode { get; set; }
         public Nullable<int> score { get; set; }
+        public Nullable<int> SessionId { get; set; }
     
         public virtual Course Course { get; set; }
         public virtual PeerEvaluator PeerEvaluator { get; set; }
         public virtual Teacher Teacher { get; set; }
         public virtual Questions Questions { get; set; }
+        public virtual Session Session { get; set; }
     }
 }

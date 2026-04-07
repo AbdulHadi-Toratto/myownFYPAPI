@@ -193,6 +193,7 @@
     <Compile Include="Controllers\Datacell\ExcelUpload\StudentController.cs" />
     <Compile Include="Controllers\Datacell\ExcelUpload\TeacherController.cs" />
     <Compile Include="Controllers\Director\EmailController.cs" />
+    <Compile Include="Controllers\Director\PerformanceController.cs" />
     <Compile Include="Controllers\Director\QuestionnaireController.cs" />
     <Compile Include="Controllers\HOD\KpiController.cs" />
     <Compile Include="Controllers\HOD\PeerEvaluatorController.cs" />
