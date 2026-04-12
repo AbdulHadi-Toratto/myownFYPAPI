@@ -1,4 +1,5 @@
 ﻿using myownFYPAPI.Models;
+using myownFYPAPI.Models.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -151,5 +152,122 @@ namespace myownFYPAPI.Controllers.Director
 
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("GetAllCourses")]
+        public IHttpActionResult GetAllCourses()
+        {
+            var courses = db.Course
+                .Select(c => c.code)
+                .Distinct()
+                .ToList();
+
+            return Ok(courses);
+        }
+
+        [HttpPost]
+        [Route("CompareTeachers")]
+        public IHttpActionResult CompareTeachers(CompareDTO dto)
+        {
+            var result = new List<object>();
+
+            if (dto.mode == "course")
+            {
+                // ✅ Get latest session for this course
+                var latestSessionId = db.Enrollment
+                    .Where(e => e.courseCode == dto.courseCode)
+                    .OrderByDescending(e => e.sessionID)
+                    .Select(e => e.sessionID)
+                    .FirstOrDefault();
+
+                result.Add(GetTeacherScore(dto.teacherA, dto.courseCode, latestSessionId));
+                result.Add(GetTeacherScore(dto.teacherB, dto.courseCode, latestSessionId));
+            }
+            else
+            {
+                result.Add(GetTeacherScore(dto.teacherA, null, dto.session1));
+                result.Add(GetTeacherScore(dto.teacherA, null, dto.session2));
+            }
+
+            return Ok(result);
+        }
+
+        private object GetTeacherScore(string teacherId, string courseCode, int? sessionId)
+        {
+            const double MAX_SCORE_PER_QUESTION = 4.0;  // Each question max points
+            const double SCALE_TO_TEN = 10.0;           // Average score scaled out of 10
+
+            // --- Peer Evaluation ---
+            var peerList = db.PeerEvaluation
+                .Where(p => p.evaluateeID == teacherId &&
+                       (courseCode == null || p.courseCode.ToUpper().Trim() == courseCode.ToUpper().Trim()) &&
+                       (sessionId == null || p.SessionId == sessionId))
+                .ToList();
+
+            double peerTotalScore = peerList.Sum(p => (double)p.score);
+            double peerMaxTotal = peerList.Count * MAX_SCORE_PER_QUESTION;
+            double peerAverageOutOfTen = peerMaxTotal > 0 ? (peerTotalScore / peerMaxTotal) * SCALE_TO_TEN : 0;
+
+            // --- Student Evaluation ---
+            var studentList = db.StudentEvaluation
+                .Where(s =>
+                    (courseCode == null || s.Enrollment.courseCode.ToUpper().Trim() == courseCode.ToUpper().Trim()) &&
+                    (sessionId == null || s.SessionID == sessionId) &&
+                    s.Enrollment.teacherID == teacherId
+                )
+                .ToList();
+
+            double studentTotalScore = studentList.Sum(s => (double)s.score);
+            double studentMaxTotal = studentList.Count * MAX_SCORE_PER_QUESTION;
+            double studentAverageOutOfTen = studentMaxTotal > 0 ? (studentTotalScore / studentMaxTotal) * SCALE_TO_TEN : 0;
+
+            // --- Overall Average Out of 100 ---
+            double overallAveragePercentage = 0;
+            double totalScore = peerTotalScore + studentTotalScore;
+            double totalMax = peerMaxTotal + studentMaxTotal;
+            if (totalMax > 0)
+                overallAveragePercentage = (totalScore / totalMax) * 100;
+
+            // --- Teacher Name ---
+            var name = db.Teacher
+                .Where(t => t.userID == teacherId)
+                .Select(t => t.name)
+                .FirstOrDefault();
+
+            return new
+            {
+                Name = name,
+                PeerAverageOutOfTen = Math.Round(peerAverageOutOfTen, 2),
+                StudentAverageOutOfTen = Math.Round(studentAverageOutOfTen, 2),
+                OverallAverageOutOfHundred = Math.Round(overallAveragePercentage, 2),
+                PeerTotalScore = Math.Round(peerTotalScore, 2),
+                PeerMaxTotal = peerMaxTotal,
+                StudentTotalScore = Math.Round(studentTotalScore, 2),
+                StudentMaxTotal = studentMaxTotal,
+                TotalScore = Math.Round(totalScore, 2),
+                TotalMax = totalMax,
+            };
+        }
+
+        [HttpGet]
+        [Route("GetAllTeachers")]
+        public IHttpActionResult GetAllTeachers()
+        {
+            var teachers = db.Enrollment
+                .Select(e => new
+                {
+                    id = e.teacherID,
+                    name = db.Teacher
+                                .Where(t => t.userID == e.teacherID)
+                                .Select(t => t.name)
+                                .FirstOrDefault()
+                })
+                .Distinct()
+                .ToList();
+
+            return Ok(teachers);
+        }
+
+        
     }
 }

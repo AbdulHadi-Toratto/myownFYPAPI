@@ -212,6 +212,7 @@
     </Compile>
     <Compile Include="Models\DTO\AddKPIDto.cs" />
     <Compile Include="Models\DTO\AddPeerEvaluatorDTO.cs" />
+    <Compile Include="Models\DTO\CompareDTO.cs" />
     <Compile Include="Models\DTO\ConfidentialEvaluationDto.cs" />
     <Compile Include="Models\DTO\PerformanceDto.cs" />
     <Compile Include="Models\DTO\QestionnaireListDto.cs" />
