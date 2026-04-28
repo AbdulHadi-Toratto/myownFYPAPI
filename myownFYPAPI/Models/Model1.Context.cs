@@ -44,5 +44,8 @@ namespace myownFYPAPI.Models
         public DbSet<Questions> Questions { get; set; }
         public DbSet<Email> Email { get; set; }
         public DbSet<SessionKPIWeight> SessionKPIWeight { get; set; }
+        public DbSet<Societies> Societies { get; set; }
+        public DbSet<SocietyAssignments> SocietyAssignments { get; set; }
+        public DbSet<SocietyEvaluation> SocietyEvaluation { get; set; }
     }
 }

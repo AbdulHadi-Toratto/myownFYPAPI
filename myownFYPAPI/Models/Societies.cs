@@ -12,25 +12,19 @@ namespace myownFYPAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Users
+    public partial class Societies
     {
-        public Users()
+        public Societies()
         {
-            this.KPIScore = new HashSet<KPIScore>();
-            this.KPIScore1 = new HashSet<KPIScore>();
             this.SocietyAssignments = new HashSet<SocietyAssignments>();
+            this.SocietyEvaluation = new HashSet<SocietyEvaluation>();
         }
     
-        public string id { get; set; }
-        public string password { get; set; }
-        public string role { get; set; }
-        public string profileImagePath { get; set; }
-        public Nullable<int> isActive { get; set; }
+        public int SocietyId { get; set; }
+        public string SocietyName { get; set; }
+        public string Description { get; set; }
     
-        public virtual ICollection<KPIScore> KPIScore { get; set; }
-        public virtual ICollection<KPIScore> KPIScore1 { get; set; }
-        public virtual Student Student { get; set; }
-        public virtual Teacher Teacher { get; set; }
         public virtual ICollection<SocietyAssignments> SocietyAssignments { get; set; }
+        public virtual ICollection<SocietyEvaluation> SocietyEvaluation { get; set; }
     }
 }

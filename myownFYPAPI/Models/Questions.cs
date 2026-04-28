@@ -18,6 +18,7 @@ namespace myownFYPAPI.Models
         {
             this.StudentEvaluation = new HashSet<StudentEvaluation>();
             this.PeerEvaluation = new HashSet<PeerEvaluation>();
+            this.SocietyEvaluation = new HashSet<SocietyEvaluation>();
         }
     
         public int QuestionID { get; set; }
@@ -27,5 +28,6 @@ namespace myownFYPAPI.Models
         public virtual Questionare Questionare { get; set; }
         public virtual ICollection<StudentEvaluation> StudentEvaluation { get; set; }
         public virtual ICollection<PeerEvaluation> PeerEvaluation { get; set; }
+        public virtual ICollection<SocietyEvaluation> SocietyEvaluation { get; set; }
     }
 }
