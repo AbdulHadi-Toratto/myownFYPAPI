@@ -195,6 +195,7 @@
     <Compile Include="Controllers\Director\EmailController.cs" />
     <Compile Include="Controllers\Director\PerformanceController.cs" />
     <Compile Include="Controllers\Director\QuestionnaireController.cs" />
+    <Compile Include="Controllers\HOD\CourseManagementController.cs" />
     <Compile Include="Controllers\HOD\KpiController.cs" />
     <Compile Include="Controllers\HOD\PeerEvaluatorController.cs" />
     <Compile Include="Controllers\HOD\SocietyManagementController.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Models\DTO\AddPeerEvaluatorDTO.cs" />
     <Compile Include="Models\DTO\CompareDTO.cs" />
     <Compile Include="Models\DTO\ConfidentialEvaluationDto.cs" />
+    <Compile Include="Models\DTO\CourseManagementDto.cs" />
     <Compile Include="Models\DTO\PerformanceDto.cs" />
     <Compile Include="Models\DTO\QestionnaireListDto.cs" />
     <Compile Include="Models\DTO\QuestionCreateDto.cs" />
