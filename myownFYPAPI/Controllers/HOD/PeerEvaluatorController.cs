@@ -26,7 +26,8 @@ namespace myownFYPAPI.Controllers.HOD
                 {
                     t.userID,
                     t.name,
-                    t.department
+                    t.department,
+                    t.isPermanentEvaluator
                 })
                 .ToList();
 
@@ -81,6 +82,70 @@ namespace myownFYPAPI.Controllers.HOD
                               }).ToList();
 
             return Ok(evaluators);
+        }
+
+        [HttpPost]
+        [Route("TogglePermanent")]
+        public IHttpActionResult TogglePermanentStatus(TogglePermanentDto model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.UserID))
+                return BadRequest("Invalid user data.");
+
+            try
+            {
+                var teacher = db.Teacher.FirstOrDefault(t => t.userID == model.UserID);
+                if (teacher == null) return NotFound();
+
+                // Status update karein: 1 for Permanent, 0 for Normal
+                teacher.isPermanentEvaluator = model.IsPermanent ? 1 : 0;
+
+                // Agar kisi ko Permanent banaya hai, toh usey PeerEvaluator table (manual list) se hatayein
+                // Kyunke wo ab globally available hoga
+                if (model.IsPermanent)
+                {
+                    var manualAssignments = db.PeerEvaluator.Where(pe => pe.teacherID == model.UserID).ToList();
+                    if (manualAssignments.Any())
+                    {
+                        db.PeerEvaluator.RemoveRange(manualAssignments);
+                    }
+                }
+
+                db.SaveChanges();
+
+                string status = model.IsPermanent ? "Permanent" : "Normal";
+                return Ok(new { message = $"Teacher marked as {status} evaluator successfully." });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+
+        [HttpPost]
+        [Route("SetBulkPermanent")]
+        public IHttpActionResult SetBulkPermanent(BulkPermanentDto model)
+        {
+            if (model == null || model.UserIDs == null || !model.UserIDs.Any())
+                return BadRequest("No User IDs provided.");
+
+            try
+            {
+                var teachers = db.Teacher.Where(t => model.UserIDs.Contains(t.userID)).ToList();
+
+                foreach (var t in teachers)
+                {
+                    t.isPermanentEvaluator = 1;
+                }
+
+                db.SaveChanges();
+
+                return Ok(new { message = "Selected teachers are now Permanent Evaluators." });
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

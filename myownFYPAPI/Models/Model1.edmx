@@ -193,6 +193,8 @@
           <Property Name="userID" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="50" />
           <Property Name="department" Type="varchar" MaxLength="50" />
+          <Property Name="isPermanentEvaluator" Type="int" />
+          <Property Name="designation" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -1080,6 +1082,8 @@
           <NavigationProperty Name="Users" Relationship="Self.FK__Teacher__userID__74AE54BC" FromRole="Teacher" ToRole="Users" />
           <NavigationProperty Name="SocietyEvaluation" Relationship="fypapiv1Model.FK_SocietyEvaluation_Evaluatee" FromRole="Teacher" ToRole="SocietyEvaluation" />
           <NavigationProperty Name="SocietyEvaluation1" Relationship="fypapiv1Model.FK_SocietyEvaluation_Evaluator" FromRole="Teacher" ToRole="SocietyEvaluation" />
+          <Property Name="isPermanentEvaluator" Type="Int32" />
+          <Property Name="designation" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -2029,6 +2033,8 @@
           <EntitySetMapping Name="Teacher">
             <EntityTypeMapping TypeName="fypapiv1Model.Teacher">
               <MappingFragment StoreEntitySet="Teacher">
+                <ScalarProperty Name="designation" ColumnName="designation" />
+                <ScalarProperty Name="isPermanentEvaluator" ColumnName="isPermanentEvaluator" />
                 <ScalarProperty Name="userID" ColumnName="userID" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="department" ColumnName="department" />

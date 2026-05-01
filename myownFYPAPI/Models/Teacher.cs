@@ -27,6 +27,8 @@ namespace myownFYPAPI.Models
         public string userID { get; set; }
         public string name { get; set; }
         public string department { get; set; }
+        public Nullable<int> isPermanentEvaluator { get; set; }
+        public string designation { get; set; }
     
         public virtual ICollection<CourseAllocation> CourseAllocation { get; set; }
         public virtual ICollection<Enrollment> Enrollment { get; set; }
