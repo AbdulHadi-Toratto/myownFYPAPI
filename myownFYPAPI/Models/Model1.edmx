@@ -28,6 +28,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="mail" Type="varchar" MaxLength="100" />
           <Property Name="isActive" Type="bit" />
+          <Property Name="password" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="EmployeeType">
           <Key>
@@ -1651,6 +1652,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="mail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="isActive" Type="Boolean" />
+          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK__EmployeSe__Emplo__607251E5">
           <End Type="fypapiv1Model.EmployeeType" Role="EmployeeType" Multiplicity="0..1" />
@@ -2064,6 +2066,7 @@
           <EntitySetMapping Name="Email">
             <EntityTypeMapping TypeName="fypapiv1Model.Email">
               <MappingFragment StoreEntitySet="Email">
+                <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
                 <ScalarProperty Name="mail" ColumnName="mail" />
                 <ScalarProperty Name="id" ColumnName="id" />

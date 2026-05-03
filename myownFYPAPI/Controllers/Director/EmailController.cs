@@ -17,9 +17,17 @@ namespace myownFYPAPI.Controllers.Director
 
         [HttpGet]
         [Route("getall")]
-        public IHttpActionResult getAllEmails()
+        public IHttpActionResult GetAllEmails()
         {
-            var emails = db.Email.OrderByDescending(x => x.id).ToList();
+            var emails = db.Email
+                .Select(x => new
+                {
+                    x.id,
+                    x.mail,
+                    x.isActive
+                })
+                .OrderByDescending(x => x.id)
+                .ToList();
 
             return Ok(emails);
         }
@@ -39,8 +47,8 @@ namespace myownFYPAPI.Controllers.Director
         [Route("add")]
         public IHttpActionResult AddEmail(Email model)
         {
-            if (model == null || string.IsNullOrEmpty(model.mail))
-                return BadRequest("Email is required.");
+            if (model == null || string.IsNullOrEmpty(model.mail) || string.IsNullOrEmpty(model.password))
+                return BadRequest("Email and App Password are required.");
 
             model.isActive = false;
 

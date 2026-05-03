@@ -1,5 +1,6 @@
 ﻿using myownFYPAPI.Models;
 using myownFYPAPI.Models.DTO;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -239,7 +240,11 @@ namespace myownFYPAPI.Controllers.Student
                     }).ToList()
                 };
 
-                string body = Newtonsoft.Json.JsonConvert.SerializeObject(emailObject, Newtonsoft.Json.Formatting.Indented);
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(emailObject, Newtonsoft.Json.Formatting.Indented);
+
+               
+
+                string body = $"START_EVAL\n{json}\nEND_EVAL";
 
 
 
@@ -282,7 +287,7 @@ namespace myownFYPAPI.Controllers.Student
 
                 using (var message = new MailMessage(fromAddress, toAddress)
                 {
-                    Subject = "Confidential Evaluation - EPAS",
+                    Subject = "Confidential Evaluation",
                     Body = body
                 })
                 {

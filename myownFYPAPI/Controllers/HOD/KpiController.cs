@@ -198,70 +198,171 @@ namespace myownFYPAPI.Controllers.HOD
             catch (Exception ex) { return InternalServerError(ex); }
         }
 
-        // 4. DELETE MAIN KPI (Safe & Global 100%)
         [HttpDelete]
-        [Route("delete-main-kpi/{sid:int}/{kpiid:int}")] // Added explicit type constraints
+        [Route("delete-main-kpi/{sid:int}/{kpiid:int}")]
         public IHttpActionResult DeleteMainKpi(int sid, int kpiid)
         {
-            try
+            using (var scope = new TransactionScope())
             {
-                using (var scope = new TransactionScope())
+                try
                 {
-                    var kpi = db.KPI.Find(kpiid);
-                    if (kpi == null) return Content(HttpStatusCode.NotFound, "KPI not found in database.");
+                    var kpi = db.KPI.FirstOrDefault(x => x.id == kpiid);
+                    if (kpi == null)
+                        return Content(HttpStatusCode.NotFound, "KPI not found.");
 
                     int empTypeId = kpi.KPI_Employeetype ?? 0;
 
-                    // 1. Remove from Mapping Table
-                    var mappings = db.EmployeSessionKPI.Where(m => m.KPIID == kpiid && m.SessionID == sid).ToList();
-                    foreach (var m in mappings) db.EmployeSessionKPI.Remove(m);
+                    // 🔥 STEP 1: Get mappings
+                    var mappings = db.EmployeSessionKPI
+                        .Where(m => m.KPIID == kpiid && m.SessionID == sid)
+                        .ToList();
 
-                    // 2. Remove Weights
-                    var weights = db.SessionKPIWeight.Where(w => w.KPIID == kpiid && w.SessionID == sid).ToList();
-                    foreach (var w in weights) db.SessionKPIWeight.Remove(w);
+                    var mappingIds = mappings.Select(m => m.id).ToList();
 
-                    // 3. Remove SubKPIs (only those belonging to this KPI)
-                    var subs = db.SubKPI.Where(s => s.KPIID == kpiid).ToList();
-                    foreach (var s in subs) db.SubKPI.Remove(s);
+                    // 🔥 STEP 2: Delete KPI Scores FIRST (deep dependency)
+                    var scores = db.KPIScore
+                        .Where(s => s.empKPIID != null && mappingIds.Contains(s.empKPIID.Value))
+                        .ToList();
 
+                    db.KPIScore.RemoveRange(scores);
+
+                    // 🔥 STEP 3: Delete mappings
+                    db.EmployeSessionKPI.RemoveRange(mappings);
+
+                    // 🔥 STEP 4: Delete Session KPI Weights
+                    var weights = db.SessionKPIWeight
+                        .Where(w => w.KPIID == kpiid && w.SessionID == sid)
+                        .ToList();
+
+                    db.SessionKPIWeight.RemoveRange(weights);
+
+                    // 🔥 STEP 5: Delete Sub KPIs
+                    var subKpis = db.SubKPI
+                        .Where(s => s.KPIID == kpiid)
+                        .ToList();
+
+                    db.SubKPI.RemoveRange(subKpis);
+
+                    // 🔥 STEP 6: Delete Main KPI
                     db.KPI.Remove(kpi);
+
                     db.SaveChanges();
 
-                    // 4. Global Weight Adjustment
-                    var bakiWeights = db.SessionKPIWeight.Where(w => w.SessionID == sid &&
-                                      db.KPI.Any(k => k.id == w.KPIID && k.KPI_Employeetype == empTypeId)).ToList();
-
-                    if (bakiWeights.Any())
-                    {
-                        decimal currentTotal = bakiWeights.Sum(x => (decimal)(x.Weight ?? 0));
-                        if (currentTotal > 0)
-                        {
-                            decimal factor = 100m / currentTotal;
-                            foreach (var bw in bakiWeights)
-                            {
-                                bw.Weight = (int)Math.Round((bw.Weight ?? 0) * factor, MidpointRounding.AwayFromZero);
-                            }
-                            db.SaveChanges();
-
-                            int finalSum = bakiWeights.Sum(x => x.Weight ?? 0);
-                            if (finalSum != 100)
-                            {
-                                bakiWeights.First().Weight += (100 - finalSum);
-                                db.SaveChanges();
-                            }
-                        }
-                    }
+                    // 🔥 STEP 7: Adjust remaining weights (ONLY if needed)
+                    AdjustWeights(sid, empTypeId);
 
                     scope.Complete();
-                    return Ok(new { Message = "Deleted Successfully" });
+
+                    return Ok(new { Message = "KPI deleted successfully" });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.ToString()); // 🔥 full error for debugging
                 }
             }
-            catch (Exception ex)
+        }
+
+        private void AdjustWeights(int sessionId, int empTypeId)
+        {
+            var remainingWeights = db.SessionKPIWeight
+                .Where(w => w.SessionID == sessionId &&
+                            db.KPI.Any(k => k.id == w.KPIID && k.KPI_Employeetype == empTypeId))
+                .ToList();
+
+            if (!remainingWeights.Any())
+                return; // ✅ nothing left → skip
+
+            decimal total = remainingWeights.Sum(x => (decimal)(x.Weight ?? 0));
+
+            if (total <= 0)
+                return;
+
+            decimal factor = 100m / total;
+
+            foreach (var w in remainingWeights)
             {
-                // This will help you see the EXACT C# error in your React Native console
-                return BadRequest(ex.InnerException?.Message ?? ex.Message);
+                w.Weight = (int)Math.Round((w.Weight ?? 0) * factor, MidpointRounding.AwayFromZero);
+            }
+
+            db.SaveChanges();
+
+            // 🔥 Fix rounding drift
+            int finalSum = remainingWeights.Sum(x => x.Weight ?? 0);
+
+            if (finalSum != 100)
+            {
+                remainingWeights.First().Weight += (100 - finalSum);
+                db.SaveChanges();
             }
         }
+
+
+
+        // old end point for deleeting main kpi => not behaving correctly
+        //// 4. DELETE MAIN KPI (Safe & Global 100%)
+        //[HttpDelete]
+        //[Route("delete-main-kpi/{sid:int}/{kpiid:int}")] // Added explicit type constraints
+        //public IHttpActionResult DeleteMainKpi(int sid, int kpiid)
+        //{
+        //    try
+        //    {
+        //        using (var scope = new TransactionScope())
+        //        {
+        //            var kpi = db.KPI.Find(kpiid);
+        //            if (kpi == null) return Content(HttpStatusCode.NotFound, "KPI not found in database.");
+
+        //            int empTypeId = kpi.KPI_Employeetype ?? 0;
+
+        //            // 1. Remove from Mapping Table
+        //            var mappings = db.EmployeSessionKPI.Where(m => m.KPIID == kpiid && m.SessionID == sid).ToList();
+        //            foreach (var m in mappings) db.EmployeSessionKPI.Remove(m);
+
+        //            // 2. Remove Weights
+        //            var weights = db.SessionKPIWeight.Where(w => w.KPIID == kpiid && w.SessionID == sid).ToList();
+        //            foreach (var w in weights) db.SessionKPIWeight.Remove(w);
+
+        //            // 3. Remove SubKPIs (only those belonging to this KPI)
+        //            var subs = db.SubKPI.Where(s => s.KPIID == kpiid).ToList();
+        //            foreach (var s in subs) db.SubKPI.Remove(s);
+
+        //            db.KPI.Remove(kpi);
+        //            db.SaveChanges();
+
+        //            // 4. Global Weight Adjustment
+        //            var bakiWeights = db.SessionKPIWeight.Where(w => w.SessionID == sid &&
+        //                              db.KPI.Any(k => k.id == w.KPIID && k.KPI_Employeetype == empTypeId)).ToList();
+
+        //            if (bakiWeights.Any())
+        //            {
+        //                decimal currentTotal = bakiWeights.Sum(x => (decimal)(x.Weight ?? 0));
+        //                if (currentTotal > 0)
+        //                {
+        //                    decimal factor = 100m / currentTotal;
+        //                    foreach (var bw in bakiWeights)
+        //                    {
+        //                        bw.Weight = (int)Math.Round((bw.Weight ?? 0) * factor, MidpointRounding.AwayFromZero);
+        //                    }
+        //                    db.SaveChanges();
+
+        //                    int finalSum = bakiWeights.Sum(x => x.Weight ?? 0);
+        //                    if (finalSum != 100)
+        //                    {
+        //                        bakiWeights.First().Weight += (100 - finalSum);
+        //                        db.SaveChanges();
+        //                    }
+        //                }
+        //            }
+
+        //            scope.Complete();
+        //            return Ok(new { Message = "Deleted Successfully" });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // This will help you see the EXACT C# error in your React Native console
+        //        return BadRequest(ex.InnerException?.Message ?? ex.Message);
+        //    }
+        //}
         // 5. EDIT MAIN KPI NAME
         [HttpPut]
         [Route("edit-kpi-name/{id}")]
