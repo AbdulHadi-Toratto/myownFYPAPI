@@ -198,26 +198,6 @@ namespace myownFYPAPI.Controllers.Student
                     .Where(q => questionIds.Contains(q.QuestionID))
                     .ToList();
 
-                // 🔹 Build Email Body
-
-                //string body = "";
-                //body += "CONFIDENTIAL EVALUATION\n\n";
-                //body += "Student: " + student?.name + "\n";
-                //body += "Teacher: " + teacher?.name + "\n";
-                //body += "Course: " + course?.title + "\n";
-                //body += "Date: " + DateTime.Now + "\n\n";
-                //body += "-----------------------------\n";
-                //body += "Questions & Answers\n";
-                //body += "-----------------------------\n\n";
-
-                //foreach (var ans in model.Answers)
-                //{
-                //    var question = questions
-                //        .FirstOrDefault(q => q.QuestionID == ans.questionId);
-
-                //    body += "Q: " + question?.QuestionText + "\n";
-                //    body += "Score: " + ans.score + "\n\n";
-                //}
 
                 var emailObject = new
                 {

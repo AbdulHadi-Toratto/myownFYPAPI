@@ -19,6 +19,7 @@ namespace myownFYPAPI.Models
             this.CourseAllocation = new HashSet<CourseAllocation>();
             this.Enrollment = new HashSet<Enrollment>();
             this.PeerEvaluation = new HashSet<PeerEvaluation>();
+            this.CHR = new HashSet<CHR>();
         }
     
         public string code { get; set; }
@@ -27,5 +28,6 @@ namespace myownFYPAPI.Models
         public virtual ICollection<CourseAllocation> CourseAllocation { get; set; }
         public virtual ICollection<Enrollment> Enrollment { get; set; }
         public virtual ICollection<PeerEvaluation> PeerEvaluation { get; set; }
+        public virtual ICollection<CHR> CHR { get; set; }
     }
 }

@@ -5,6 +5,23 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="fypapiv1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CHR">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CourseCode" Type="varchar" MaxLength="20" />
+          <Property Name="TeacherID" Type="varchar" MaxLength="20" />
+          <Property Name="TeacherName" Type="varchar" MaxLength="50" />
+          <Property Name="Discipline" Type="varchar" MaxLength="100" />
+          <Property Name="Venue" Type="varchar" MaxLength="100" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="LateIn" Type="int" />
+          <Property Name="LeftEarly" Type="int" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="500" />
+          <Property Name="ClassDate" Type="datetime" Nullable="false" />
+          <Property Name="sessionID" Type="int" />
+        </EntityType>
         <EntityType Name="Course">
           <Key>
             <PropertyRef Name="code" />
@@ -207,6 +224,30 @@
           <Property Name="profileImagePath" Type="varchar" MaxLength="50" />
           <Property Name="isActive" Type="int" />
         </EntityType>
+        <Association Name="FK__CHR__CourseCode__54CB950F">
+          <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
+          <End Role="CHR" Type="Self.CHR" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="CHR">
+              <PropertyRef Name="CourseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CHR__TeacherID__55BFB948">
+          <End Role="Teacher" Type="Self.Teacher" Multiplicity="0..1" />
+          <End Role="CHR" Type="Self.CHR" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="CHR">
+              <PropertyRef Name="TeacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__CourseAll__cours__0F624AF8">
           <End Role="Course" Type="Self.Course" Multiplicity="0..1" />
           <End Role="CourseAllocation" Type="Self.CourseAllocation" Multiplicity="*" />
@@ -567,6 +608,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_CHR_Session">
+          <End Role="Session" Type="Self.Session" Multiplicity="0..1" />
+          <End Role="CHR" Type="Self.CHR" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CHR">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_KPI_EmployeeType">
           <End Role="EmployeeType" Type="Self.EmployeeType" Multiplicity="0..1" />
           <End Role="KPI" Type="Self.KPI" Multiplicity="*" />
@@ -700,6 +753,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="fypapiv1ModelStoreContainer">
+          <EntitySet Name="CHR" EntityType="Self.CHR" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseAllocation" EntityType="Self.CourseAllocation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Email" EntityType="Self.Email" Schema="dbo" store:Type="Tables" />
@@ -722,6 +776,14 @@
           <EntitySet Name="SubKPI" EntityType="Self.SubKPI" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Teacher" EntityType="Self.Teacher" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__CHR__CourseCode__54CB950F" Association="Self.FK__CHR__CourseCode__54CB950F">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="CHR" EntitySet="CHR" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CHR__TeacherID__55BFB948" Association="Self.FK__CHR__TeacherID__55BFB948">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="CHR" EntitySet="CHR" />
+          </AssociationSet>
           <AssociationSet Name="FK__CourseAll__cours__0F624AF8" Association="Self.FK__CourseAll__cours__0F624AF8">
             <End Role="Course" EntitySet="Course" />
             <End Role="CourseAllocation" EntitySet="CourseAllocation" />
@@ -842,6 +904,10 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="Teacher" EntitySet="Teacher" />
           </AssociationSet>
+          <AssociationSet Name="FK_CHR_Session" Association="Self.FK_CHR_Session">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="CHR" EntitySet="CHR" />
+          </AssociationSet>
           <AssociationSet Name="FK_KPI_EmployeeType" Association="Self.FK_KPI_EmployeeType">
             <End Role="EmployeeType" EntitySet="EmployeeType" />
             <End Role="KPI" EntitySet="KPI" />
@@ -900,6 +966,7 @@
           <NavigationProperty Name="CourseAllocation" Relationship="Self.FK__CourseAll__cours__0F624AF8" FromRole="Course" ToRole="CourseAllocation" />
           <NavigationProperty Name="Enrollment" Relationship="Self.FK__Enrollmen__cours__7B5B524B" FromRole="Course" ToRole="Enrollment" />
           <NavigationProperty Name="PeerEvaluation" Relationship="Self.FK__PeerEvalu__cours__0B91BA14" FromRole="Course" ToRole="PeerEvaluation" />
+          <NavigationProperty Name="CHR" Relationship="fypapiv1Model.FK__CHR__CourseCode__54CB950F" FromRole="Course" ToRole="CHR" />
         </EntityType>
         <EntityType Name="CourseAllocation">
           <Key>
@@ -1032,6 +1099,7 @@
           <NavigationProperty Name="PeerEvaluation" Relationship="fypapiv1Model.SessionFk" FromRole="Session" ToRole="PeerEvaluation" />
           <NavigationProperty Name="SocietyAssignments" Relationship="fypapiv1Model.FK__SocietyAs__Sessi__2057CCD0" FromRole="Session" ToRole="SocietyAssignments" />
           <NavigationProperty Name="SocietyEvaluation" Relationship="fypapiv1Model.FK_SocietyEvaluation_Session" FromRole="Session" ToRole="SocietyEvaluation" />
+          <NavigationProperty Name="CHR" Relationship="fypapiv1Model.FK_CHR_Session" FromRole="Session" ToRole="CHR" />
         </EntityType>
         <EntityType Name="Student">
           <Key>
@@ -1085,6 +1153,7 @@
           <NavigationProperty Name="SocietyEvaluation1" Relationship="fypapiv1Model.FK_SocietyEvaluation_Evaluator" FromRole="Teacher" ToRole="SocietyEvaluation" />
           <Property Name="isPermanentEvaluator" Type="Int32" />
           <Property Name="designation" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="CHR" Relationship="fypapiv1Model.FK__CHR__TeacherID__55BFB948" FromRole="Teacher" ToRole="CHR" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -1596,6 +1665,19 @@
             <End Role="Teacher" EntitySet="Teacher" />
             <End Role="SocietyEvaluation" EntitySet="SocietyEvaluation" />
           </AssociationSet>
+          <EntitySet Name="CHR" EntityType="fypapiv1Model.CHR" />
+          <AssociationSet Name="FK__CHR__CourseCode__54CB950F" Association="fypapiv1Model.FK__CHR__CourseCode__54CB950F">
+            <End Role="Course" EntitySet="Course" />
+            <End Role="CHR" EntitySet="CHR" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CHR__TeacherID__55BFB948" Association="fypapiv1Model.FK__CHR__TeacherID__55BFB948">
+            <End Role="Teacher" EntitySet="Teacher" />
+            <End Role="CHR" EntitySet="CHR" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CHR_Session" Association="fypapiv1Model.FK_CHR_Session">
+            <End Role="Session" EntitySet="Session" />
+            <End Role="CHR" EntitySet="CHR" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Questions">
           <Key>
@@ -1889,6 +1971,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CHR">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CourseCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="TeacherID" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="TeacherName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Discipline" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Venue" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LateIn" Type="Int32" />
+          <Property Name="LeftEarly" Type="Int32" />
+          <Property Name="Remarks" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ClassDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="sessionID" Type="Int32" />
+          <NavigationProperty Name="Course" Relationship="fypapiv1Model.FK__CHR__CourseCode__54CB950F" FromRole="CHR" ToRole="Course" />
+          <NavigationProperty Name="Teacher" Relationship="fypapiv1Model.FK__CHR__TeacherID__55BFB948" FromRole="CHR" ToRole="Teacher" />
+          <NavigationProperty Name="Session" Relationship="fypapiv1Model.FK_CHR_Session" FromRole="CHR" ToRole="Session" />
+        </EntityType>
+        <Association Name="FK__CHR__CourseCode__54CB950F">
+          <End Type="fypapiv1Model.Course" Role="Course" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.CHR" Role="CHR" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="code" />
+            </Principal>
+            <Dependent Role="CHR">
+              <PropertyRef Name="CourseCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CHR__TeacherID__55BFB948">
+          <End Type="fypapiv1Model.Teacher" Role="Teacher" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.CHR" Role="CHR" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Teacher">
+              <PropertyRef Name="userID" />
+            </Principal>
+            <Dependent Role="CHR">
+              <PropertyRef Name="TeacherID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CHR_Session">
+          <End Type="fypapiv1Model.Session" Role="Session" Multiplicity="0..1" />
+          <End Type="fypapiv1Model.CHR" Role="CHR" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Session">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CHR">
+              <PropertyRef Name="sessionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2116,6 +2254,24 @@
                 <ScalarProperty Name="EvaluateeId" ColumnName="EvaluateeId" />
                 <ScalarProperty Name="EvaluatorId" ColumnName="EvaluatorId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CHR">
+            <EntityTypeMapping TypeName="fypapiv1Model.CHR">
+              <MappingFragment StoreEntitySet="CHR">
+                <ScalarProperty Name="sessionID" ColumnName="sessionID" />
+                <ScalarProperty Name="ClassDate" ColumnName="ClassDate" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="LeftEarly" ColumnName="LeftEarly" />
+                <ScalarProperty Name="LateIn" ColumnName="LateIn" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Venue" ColumnName="Venue" />
+                <ScalarProperty Name="Discipline" ColumnName="Discipline" />
+                <ScalarProperty Name="TeacherName" ColumnName="TeacherName" />
+                <ScalarProperty Name="TeacherID" ColumnName="TeacherID" />
+                <ScalarProperty Name="CourseCode" ColumnName="CourseCode" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

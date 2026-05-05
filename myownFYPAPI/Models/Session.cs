@@ -26,6 +26,7 @@ namespace myownFYPAPI.Models
             this.PeerEvaluation = new HashSet<PeerEvaluation>();
             this.SocietyAssignments = new HashSet<SocietyAssignments>();
             this.SocietyEvaluation = new HashSet<SocietyEvaluation>();
+            this.CHR = new HashSet<CHR>();
         }
     
         public int id { get; set; }
@@ -41,5 +42,6 @@ namespace myownFYPAPI.Models
         public virtual ICollection<PeerEvaluation> PeerEvaluation { get; set; }
         public virtual ICollection<SocietyAssignments> SocietyAssignments { get; set; }
         public virtual ICollection<SocietyEvaluation> SocietyEvaluation { get; set; }
+        public virtual ICollection<CHR> CHR { get; set; }
     }
 }

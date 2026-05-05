@@ -47,5 +47,6 @@ namespace myownFYPAPI.Models
         public DbSet<Societies> Societies { get; set; }
         public DbSet<SocietyAssignments> SocietyAssignments { get; set; }
         public DbSet<SocietyEvaluation> SocietyEvaluation { get; set; }
+        public DbSet<CHR> CHR { get; set; }
     }
 }

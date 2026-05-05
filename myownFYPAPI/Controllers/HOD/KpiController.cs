@@ -389,6 +389,112 @@ namespace myownFYPAPI.Controllers.HOD
             return Ok("Sub-KPI updated.");
         }
 
+        // 7A. EDIT KPI WEIGHT (Auto-adjusts all other KPIs to maintain 100%)
+        // ── 7A. EDIT KPI WEIGHT ───────────────────────────────────────────────────────
+        [HttpPut]
+        [Route("edit-kpi-weight/{sessionId}/{kpiId}")]
+        public IHttpActionResult EditKpiWeight(int sessionId, int kpiId, [FromBody] EditWeightDto dto)
+        {
+            if (dto == null || dto.Weight <= 0 || dto.Weight >= 100)
+                return BadRequest("Weight must be between 1 and 99.");
+
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+                    var kpi = db.KPI.Find(kpiId);
+                    if (kpi == null) return NotFound();
+                    int empTypeId = kpi.KPI_Employeetype ?? 0;
+
+                    var currentSubWeights = db.SessionKPIWeight
+                        .Where(w => w.SessionID == sessionId && w.KPIID == kpiId).ToList();
+                    if (!currentSubWeights.Any())
+                        return BadRequest("No weights found for this KPI in this session.");
+
+                    int oldKpiTotal = currentSubWeights.Sum(w => w.Weight ?? 0);
+
+                    if (oldKpiTotal > 0)
+                    {
+                        decimal scaleFactor = (decimal)dto.Weight / oldKpiTotal;
+                        foreach (var w in currentSubWeights)
+                            w.Weight = (int)Math.Round((w.Weight ?? 0) * scaleFactor, MidpointRounding.AwayFromZero);
+                        db.SaveChanges();
+
+                        int newSubSum = currentSubWeights.Sum(w => w.Weight ?? 0);
+                        if (newSubSum != dto.Weight)
+                        {
+                            currentSubWeights.First().Weight += (dto.Weight - newSubSum);
+                            db.SaveChanges();
+                        }
+                    }
+
+                    AdjustGlobalWeights(sessionId, empTypeId, kpiId, dto.Weight);
+
+                    scope.Complete();
+                    return Ok(new { Message = "KPI weight updated and all others auto-adjusted.", NewWeight = dto.Weight });
+                }
+            }
+            catch (Exception ex) { return InternalServerError(new Exception("Error: " + ex.Message)); }
+        }
+
+        // ── 7B. EDIT SUB-KPI WEIGHT ───────────────────────────────────────────────────
+        [HttpPut]
+        [Route("edit-subkpi-weight/{sessionId}/{subKpiId}")]
+        public IHttpActionResult EditSubKpiWeight(int sessionId, int subKpiId, [FromBody] EditWeightDto dto)
+        {
+            if (dto == null || dto.Weight <= 0)
+                return BadRequest("Weight must be greater than 0.");
+
+            try
+            {
+                using (var scope = new TransactionScope())
+                {
+                    var targetWeight = db.SessionKPIWeight
+                        .FirstOrDefault(w => w.SessionID == sessionId && w.SubKPIID == subKpiId);
+                    if (targetWeight == null) return NotFound();
+
+                    int kpiId = (int)targetWeight.KPIID;
+
+                    var allSubWeights = db.SessionKPIWeight
+                        .Where(w => w.SessionID == sessionId && w.KPIID == kpiId).ToList();
+
+                    int kpiTotal = allSubWeights.Sum(w => w.Weight ?? 0);
+
+                    if (dto.Weight >= kpiTotal)
+                        return BadRequest($"Sub-KPI weight must be less than KPI total ({kpiTotal}).");
+
+                    var siblingWeights = allSubWeights
+                        .Where(w => w.SubKPIID != subKpiId).ToList();
+
+                    int oldSiblingTotal = siblingWeights.Sum(w => w.Weight ?? 0);
+                    int targetSiblingTotal = kpiTotal - dto.Weight;
+
+                    targetWeight.Weight = dto.Weight;
+
+                    if (oldSiblingTotal > 0 && siblingWeights.Any())
+                    {
+                        decimal scaleFactor = (decimal)targetSiblingTotal / oldSiblingTotal;
+                        foreach (var w in siblingWeights)
+                            w.Weight = (int)Math.Round((w.Weight ?? 0) * scaleFactor, MidpointRounding.AwayFromZero);
+                        db.SaveChanges();
+
+                        int newTotal = allSubWeights.Sum(w => w.Weight ?? 0);
+                        if (newTotal != kpiTotal)
+                        {
+                            siblingWeights.First().Weight += (kpiTotal - newTotal);
+                            db.SaveChanges();
+                        }
+                    }
+
+                    db.SaveChanges();
+                    scope.Complete();
+                    return Ok(new { Message = "Sub-KPI weight updated and siblings auto-adjusted.", KpiTotal = kpiTotal });
+                }
+            }
+            catch (Exception ex) { return InternalServerError(new Exception("Error: " + ex.Message)); }
+        }
+
+
         // 7. HELPER: Global Adjustment
         private void AdjustGlobalWeights(int sessionId, int empTypeId, int currentKpiId, decimal newKpiWeight)
         {

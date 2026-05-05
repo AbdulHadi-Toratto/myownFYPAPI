@@ -70,6 +70,10 @@
         <AssociationConnector Association="fypapiv1Model.FK_SocietyEvaluation_Society" />
         <AssociationConnector Association="fypapiv1Model.FK_SocietyEvaluation_Evaluatee" />
         <AssociationConnector Association="fypapiv1Model.FK_SocietyEvaluation_Evaluator" />
+        <EntityTypeShape EntityType="fypapiv1Model.CHR" Width="1.5" PointX="13.25" PointY="10.625" />
+        <AssociationConnector Association="fypapiv1Model.FK__CHR__CourseCode__54CB950F" />
+        <AssociationConnector Association="fypapiv1Model.FK__CHR__TeacherID__55BFB948" />
+        <AssociationConnector Association="fypapiv1Model.FK_CHR_Session" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
