@@ -239,6 +239,7 @@
     <Compile Include="Models\DTO\ConfidentialEvaluationDto.cs" />
     <Compile Include="Models\DTO\CourseManagementDto.cs" />
     <Compile Include="Models\DTO\EditRowDto.cs" />
+    <Compile Include="Models\DTO\EmailRequest.cs" />
     <Compile Include="Models\DTO\PerformanceDto.cs" />
     <Compile Include="Models\DTO\PermanentEvaluatorDTO%27s.cs" />
     <Compile Include="Models\DTO\QestionnaireListDto.cs" />
