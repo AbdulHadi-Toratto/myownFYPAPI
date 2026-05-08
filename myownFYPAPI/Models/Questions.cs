@@ -24,6 +24,7 @@ namespace myownFYPAPI.Models
         public int QuestionID { get; set; }
         public int QuestionareID { get; set; }
         public string QuestionText { get; set; }
+        public Nullable<bool> isCritical { get; set; }
     
         public virtual Questionare Questionare { get; set; }
         public virtual ICollection<StudentEvaluation> StudentEvaluation { get; set; }

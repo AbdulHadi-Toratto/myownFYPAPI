@@ -9,7 +9,7 @@ namespace myownFYPAPI.Models.DTO
     {
        
             public int QuestionnaireId { get; set; }
-            public List<QuestionEditDto> Questions { get; set; }
+            public List<QuestionItemDto> Questions { get; set; }
             public List<int> DeletedIds { get; set; }
    
 

@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Routing;
 using System.Web.Http;
+using System.Data.Entity;
 using myownFYPAPI.Models.DTO;
 namespace myownFYPAPI.Controllers.Director
 {
@@ -35,15 +36,17 @@ namespace myownFYPAPI.Controllers.Director
             db.SaveChanges(); // 🔥 ID generated here
 
             // 2️⃣ Insert Questions
-            foreach (var q in model.Questions)
+            foreach (var qObj in model.Questions) // model.Questions ab object list hai
             {
-                var question = new Questions
+                if (!string.IsNullOrWhiteSpace(qObj.QuestionText))
                 {
-                    QuestionareID = questionnaire.id,
-                    QuestionText = q
-                };
-
-                db.Questions.Add(question);
+                    db.Questions.Add(new Questions
+                    {
+                        QuestionareID = questionnaire.id,
+                        QuestionText = qObj.QuestionText,
+                        isCritical = qObj.IsCritical // <--- Ye naya column add karein
+                    });
+                }
             }
 
             db.SaveChanges();
@@ -113,52 +116,62 @@ namespace myownFYPAPI.Controllers.Director
         {
             if (model == null)
                 return BadRequest("Invalid data");
-
-            // 1️⃣ DELETE REMOVED QUESTIONS
-            if (model.DeletedIds != null && model.DeletedIds.Count > 0)
+            try
             {
-                var deleteQuestions = db.Questions
-                    .Where(q => model.DeletedIds.Contains(q.QuestionID))
-                    .ToList();
 
-                foreach (var q in deleteQuestions)
+
+                // 1️⃣ DELETE REMOVED QUESTIONS
+                if (model.DeletedIds != null && model.DeletedIds.Count > 0)
                 {
-                    db.Questions.Remove(q);
+                    var deleteQuestions = db.Questions
+                        .Where(q => model.DeletedIds.Contains(q.QuestionID))
+                        .ToList();
+
+                    foreach (var q in deleteQuestions)
+                    {
+                        db.Questions.Remove(q);
+                    }
+
+                    //db.Questions.RemoveRange(deleteQuestions);
                 }
 
-                //db.Questions.RemoveRange(deleteQuestions);
-            }
-
-            // 2️⃣ ADD & UPDATE QUESTIONS
-            foreach (var q in model.Questions)
-            {
-                if (q.Id == 0)
+                // 2️⃣ ADD & UPDATE QUESTIONS
+                if (model.Questions != null)
                 {
-                    // ➕ NEW QUESTION
-                    var newQuestion = new Questions
+                    foreach (var q in model.Questions)
                     {
-                        QuestionareID = model.QuestionnaireId,
-                        QuestionText = q.QuestionText
-                    };
-                    db.Questions.Add(newQuestion);
-                }
-                else
-                {
-                    // ✏️ UPDATE EXISTING QUESTION
-                    var existing = db.Questions.Find(q.Id);
-                    if (existing != null)
-                    {
-                        existing.QuestionText = q.QuestionText;
+                        if (q.Id == 0) // NEW
+                        {
+                            if (!string.IsNullOrWhiteSpace(q.QuestionText))
+                            {
+                                db.Questions.Add(new Questions
+                                {
+                                    QuestionareID = model.QuestionnaireId,
+                                    QuestionText = q.QuestionText,
+                                    isCritical = q.IsCritical // <--- Yahan add karein
+                                });
+                            }
+                        }
+                        else // UPDATE
+                        {
+                            var existing = db.Questions.Find(q.Id);
+                            if (existing != null)
+                            {
+                                existing.QuestionText = q.QuestionText;
+                                existing.isCritical = q.IsCritical; // <--- Status update karein
+                            }
+                        }
                     }
                 }
+
+                db.SaveChanges();
+                return Ok(new { message = "Changes saved successfully" });
+
             }
-
-            db.SaveChanges();
-
-            return Ok(new
+            catch (Exception ex)
             {
-                message = "Questionnaire updated successfully"
-            });
+                return BadRequest(ex.InnerException?.Message ?? ex.Message);
+            }
         }
 
 
@@ -177,7 +190,8 @@ namespace myownFYPAPI.Controllers.Director
                     questions = q.Questions.Select(qq => new
                     {
                         id = qq.QuestionID,
-                        questionText = qq.QuestionText
+                        questionText = qq.QuestionText,
+                          isCritical = qq.isCritical
                     })
                 })
                 .FirstOrDefault();
@@ -188,6 +202,64 @@ namespace myownFYPAPI.Controllers.Director
             return Ok(questionnaire);
         }
 
+        [HttpDelete]
+        [Route("Delete/{id}")]
+        public IHttpActionResult DeleteQuestionnaire(int id)
+        {
+            try
+            {
+                var questionnaire = db.Questionare.Include(q => q.Questions).FirstOrDefault(q => q.id == id);
 
+                if (questionnaire == null)
+                    return NotFound();
+
+                // Pehle iske saare sawal delete karein
+                if (questionnaire.Questions != null && questionnaire.Questions.Any())
+                {
+                    db.Questions.RemoveRange(questionnaire.Questions);
+                }
+
+                // Phir main header delete karein
+                db.Questionare.Remove(questionnaire);
+                db.SaveChanges();
+
+                return Ok(new { message = "Questionnaire and all its questions deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Cannot delete: " + (ex.InnerException?.Message ?? ex.Message));
+            }
+        }
+
+        [HttpDelete]
+        [Route("DeleteQuestion/{id}")]
+        public IHttpActionResult DeleteIndividualQuestion(int id)
+        {
+            try
+            {
+                var question = db.Questions.Find(id);
+                if (question == null)
+                    return NotFound();
+
+                db.Questions.Remove(question);
+                db.SaveChanges();
+
+                return Ok(new { message = "Question removed successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Error deleting question: " + ex.Message);
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                db.Dispose();
+
+            base.Dispose(disposing);
+        }
     }
+
+
 }
