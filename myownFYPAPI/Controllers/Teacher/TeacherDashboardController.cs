@@ -116,11 +116,11 @@ namespace myownFYPAPI.Controllers.Teacher
 
             switch (designation.Trim().ToLower())
             {
-                case "hod": return 5;                  // 🔥 highest
+                case "Head of department": return 5;                  // 🔥 highest
                 case "professor": return 4;
                 case "assistant professor": return 3;
-                case "teacher": return 2;
-                case "junior teacher": return 1;
+                case "senior lecturer": return 2;
+                case "junior lecturer": return 1;
                 default: return 0;
             }
         }

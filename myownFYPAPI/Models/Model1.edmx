@@ -222,7 +222,6 @@
           <Property Name="id" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="password" Type="varchar" MaxLength="20" />
           <Property Name="role" Type="varchar" MaxLength="20" />
-          <Property Name="profileImagePath" Type="varchar" MaxLength="50" />
           <Property Name="isActive" Type="int" />
         </EntityType>
         <Association Name="FK__CHR__CourseCode__54CB950F">
@@ -1163,7 +1162,6 @@
           <Property Name="id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="role" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="profileImagePath" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="isActive" Type="Int32" />
           <NavigationProperty Name="KPIScore" Relationship="Self.FK__KPIScore__empID__6D0D32F4" FromRole="Users" ToRole="KPIScore" />
           <NavigationProperty Name="KPIScore1" Relationship="Self.FK__KPIScore__evalua__6E01572D" FromRole="Users" ToRole="KPIScore" />
@@ -2189,7 +2187,6 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="role" ColumnName="role" />
-                <ScalarProperty Name="profileImagePath" ColumnName="profileImagePath" />
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
               </MappingFragment>
             </EntityTypeMapping>

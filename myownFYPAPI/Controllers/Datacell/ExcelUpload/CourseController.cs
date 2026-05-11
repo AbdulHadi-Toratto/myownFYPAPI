@@ -46,10 +46,10 @@ namespace myownFYPAPI.Controllers.Datacell.ExcelUpload
 
                     foreach (DataRow row in dataTable.Rows)
                     {
-                        if (row["Code"] == DBNull.Value || row["Title"] == DBNull.Value) continue;
+                        if (row["code"] == DBNull.Value || row["title"] == DBNull.Value) continue;
 
-                        string code = row["Code"].ToString().Trim();
-                        string title = row["Title"].ToString().Trim();
+                        string code = row["code"].ToString().Trim();
+                        string title = row["title"].ToString().Trim();
 
                         if (db.Course.Find(code) != null) continue;
 

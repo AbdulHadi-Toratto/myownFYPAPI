@@ -16,6 +16,28 @@ namespace myownFYPAPI.Controllers.HOD
 
         fypapiv1Entities db = new fypapiv1Entities();
 
+        //[HttpGet]
+        //[Route("EnrollmentCourses/{sessionId}")]
+        //public IHttpActionResult GetEnrollmentCourses(int sessionId)
+        //{
+        //    var data = (from e in db.Enrollment
+        //                join t in db.Teacher
+        //                    on e.teacherID equals t.userID
+        //                join c in db.Course
+        //                    on e.courseCode equals c.code
+        //                where e.sessionID == sessionId
+        //                select new
+        //                {
+        //                    id = e.id,
+        //                    teacher = t.name,
+        //                    teacherID = t.userID,
+        //                    course = c.title,
+        //                    code = e.courseCode
+        //                }).ToList();
+
+        //    return Ok(data);
+        //}
+
         [HttpGet]
         [Route("EnrollmentCourses/{sessionId}")]
         public IHttpActionResult GetEnrollmentCourses(int sessionId)
@@ -26,13 +48,20 @@ namespace myownFYPAPI.Controllers.HOD
                         join c in db.Course
                             on e.courseCode equals c.code
                         where e.sessionID == sessionId
+                        group new { e, t, c } by new
+                        {
+                            t.userID,
+                            t.name,
+                            c.code,
+                            c.title
+                        } into g
                         select new
                         {
-                            id = e.id,
-                            teacher = t.name,
-                            teacherID = t.userID,
-                            course = c.title,
-                            code = e.courseCode
+                            id = g.FirstOrDefault().e.id,
+                            teacher = g.Key.name,
+                            teacherID = g.Key.userID,
+                            course = g.Key.title,
+                            code = g.Key.code
                         }).ToList();
 
             return Ok(data);
@@ -79,7 +108,7 @@ namespace myownFYPAPI.Controllers.HOD
                     // FIX: Contains ki bajaye direct ID comparison — EF error nahi dega
                     // Paper ke purane scores delete karo
                     var paperMapping = db.EmployeSessionKPI.FirstOrDefault(m =>
-                        m.SubKPI.name.Contains("Paper") && m.SessionID == dto.SessionID);
+                        m.SubKPI.name.Contains("Paper Submission") && m.SessionID == dto.SessionID);
 
                     if (paperMapping != null)
                     {
@@ -92,7 +121,7 @@ namespace myownFYPAPI.Controllers.HOD
 
                     // Folder ke purane scores delete karo
                     var folderMapping = db.EmployeSessionKPI.FirstOrDefault(m =>
-                        m.SubKPI.name.Contains("Folder") && m.SessionID == dto.SessionID);
+                        m.SubKPI.name.Contains("Folder Submission") && m.SessionID == dto.SessionID);
 
                     if (folderMapping != null)
                     {

@@ -246,13 +246,13 @@ namespace myownFYPAPI.Controllers.Student
       
             private  void SendEmail(string body)
             {
-                var fromAddress = new MailAddress("biit.epas.system@gmail.com");
+                var fromAddress = new MailAddress("onlyforwork015@gmail.com");
 
                 var Active_Email = db.Email.FirstOrDefault(x => x.isActive == true);
             var active_adress = Active_Email.mail;
             var toAddress = new MailAddress(active_adress);
 
-                const string fromPassword = "viylzrgalznlcnys";
+                const string fromPassword = "iiqoyebexdzwsdop";
 
                 var smtp = new SmtpClient
                 {
