@@ -89,91 +89,250 @@ namespace myownFYPAPI.Controllers.Director
             return Ok(teachers);
         }
 
+
         [HttpGet]
         [Route("GetTeachersPerformanceList")]
-        public IHttpActionResult GetTeachersPerformanceList(int sessionId, string department = "All", string courseCode = "All")
+        public IHttpActionResult GetTeachersPerformanceList(
+     int sessionId,
+     string department = "All",
+     string courseCode = "All"
+ )
         {
-            var query = db.Enrollment.Where(e => e.sessionID == sessionId);
+            var query = db.Enrollment
+                .Where(e => e.sessionID == sessionId);
 
-            if (department != "All") query = query.Where(e => e.Teacher.department == department);
-            if (courseCode != "All") query = query.Where(e => e.courseCode == courseCode);
+            // ✅ Department Filter
+            if (department != "All")
+            {
+                query = query.Where(e => e.Teacher.department == department);
+            }
 
-            var teacherIds = query.Select(e => e.teacherID).Distinct().ToList();
+            // ✅ Course Filter
+            if (courseCode != "All")
+            {
+                query = query.Where(e => e.courseCode == courseCode);
+            }
+
+            // ✅ IMPORTANT:
+            // Get EACH teacher-course pair
+            var enrollments = query
+                .Select(e => new
+                {
+                    TeacherID = e.teacherID,
+                    CourseCode = e.courseCode
+                })
+                .Distinct()
+                .ToList();
+
             var finalData = new List<object>();
 
-            foreach (var tid in teacherIds)
+            foreach (var item in enrollments)
             {
-                // Yahan aap apna CalculatePerformance logic call karein
-                // Isme ConfidentialEvaluation ka logic bhi add karein
-                var perf = CalculatePerformance(tid, sessionId);
+                var perf = CalculatePerformance(
+                    item.TeacherID,
+                    sessionId,
+                    item.CourseCode
+                );
+
                 finalData.Add(perf);
             }
+
             return Ok(finalData);
         }
 
         // Helper method (Taake code duplicate na ho)
-        private object CalculatePerformance(string teacherId, int sessionId)
+        private object CalculatePerformance(
+      string teacherId,
+      int sessionId,
+      string courseCode
+  )
         {
             const double MAX = 4.0;
             const double SCALE = 10.0;
 
-            // 1. Student Evaluations
+            // =========================
+            // STUDENT EVALUATION
+            // =========================
             var studentList = db.StudentEvaluation
-                .Where(s => s.Enrollment.teacherID == teacherId && s.Enrollment.sessionID == sessionId)
+                .Where(s =>
+                    s.Enrollment.teacherID == teacherId &&
+                    s.Enrollment.sessionID == sessionId &&
+                    s.Enrollment.courseCode == courseCode
+                )
                 .ToList();
+
             double sTotal = studentList.Sum(s => (double)s.score);
+
             double sMax = studentList.Count * MAX;
-            double sAvg = sMax > 0 ? (sTotal / sMax) * SCALE : 0;
 
-            // 2. Peer Evaluations
+            double sAvg = sMax > 0
+                ? (sTotal / sMax) * SCALE
+                : 0;
+
+            // =========================
+            // PEER EVALUATION
+            // =========================
             var peerList = db.PeerEvaluation
-                .Where(p => p.evaluateeID == teacherId && p.PeerEvaluator.sessionID == sessionId)
+                .Where(p =>
+                    p.evaluateeID == teacherId &&
+                    p.courseCode == courseCode &&
+                    p.SessionId == sessionId
+                )
                 .ToList();
+
             double pTotal = peerList.Sum(p => (double)p.score);
+
             double pMax = peerList.Count * MAX;
-            double pAvg = pMax > 0 ? (pTotal / pMax) * SCALE : 0;
 
-            // ✅ 3. CHR — Enrollment se session verify
-            var isEnrolled = db.Enrollment
-                .Any(e => e.teacherID == teacherId && e.sessionID == sessionId);
+            double pAvg = pMax > 0
+                ? (pTotal / pMax) * SCALE
+                : 0;
 
-            // 3. CHR Average Score — Session filter ke saath
-            // Sirf us session ki CHR records consider hongi
-            var chrAvg = 0.0;
+            // =========================
+            // CHR
+            // =========================
+            double chrAvg = 0.0;
 
             var chrRawData = db.CHR
-                .Where(c => c.TeacherID == teacherId && c.sessionID == sessionId)
-                .Select(x => new { LateIn = x.LateIn ?? 0, LeftEarly = x.LeftEarly ?? 0 })
+                .Where(c =>
+                    c.TeacherID == teacherId &&
+                    c.sessionID == sessionId
+                )
+                .Select(x => new
+                {
+                    LateIn = x.LateIn ?? 0,
+                    LeftEarly = x.LeftEarly ?? 0
+                })
                 .ToList();
 
             chrAvg = chrRawData.Any()
-                ? chrRawData.Select(x => {
+                ? chrRawData.Select(x =>
+                {
                     int total = x.LateIn + x.LeftEarly;
+
                     if (total >= 10) return 0.0;
+
                     if (total >= 6) return 3.0;
+
                     if (total >= 1) return 4.0;
+
                     return 5.0;
+
                 }).Average()
                 : 0.0;
 
-            // CHR ko 10 scale pe convert karo (baaki scores ki tarah)
             double chrPerc = Math.Round((chrAvg / 5.0) * SCALE, 2);
 
-            var teacher = db.Teacher.FirstOrDefault(t => t.userID == teacherId);
+            // =========================
+            // TEACHER
+            // =========================
+            var teacher = db.Teacher
+                .FirstOrDefault(t => t.userID == teacherId);
 
             return new
             {
                 TeacherID = teacherId,
+
                 Name = teacher?.name,
+
+                CourseCode = courseCode,
+
                 StudentAverage = Math.Round(sAvg, 2),
+
                 PeerAverage = Math.Round(pAvg, 2),
-                ChrAverage = chrPerc,           // ✅ CHR score 0-10 scale
-                ChrRawScore = Math.Round(chrAvg, 2), // ✅ Raw score 0-5 scale
-                CourseCode = db.Enrollment
-                    .Where(e => e.teacherID == teacherId && e.sessionID == sessionId)
-                    .Select(e => e.courseCode).FirstOrDefault()
+
+                ChrAverage = chrPerc,
+
+                ChrRawScore = Math.Round(chrAvg, 2),
             };
         }
+
+
+        //[HttpGet]
+        //[Route("GetTeachersPerformanceList")]
+        //public IHttpActionResult GetTeachersPerformanceList(int sessionId, string department = "All", string courseCode = "All")
+        //{
+        //    var query = db.Enrollment.Where(e => e.sessionID == sessionId);
+
+        //    if (department != "All") query = query.Where(e => e.Teacher.department == department);
+        //    if (courseCode != "All") query = query.Where(e => e.courseCode == courseCode);
+
+        //    var teacherIds = query.Select(e => e.teacherID).Distinct().ToList();
+        //    var finalData = new List<object>();
+
+        //    foreach (var tid in teacherIds)
+        //    {
+        //        // Yahan aap apna CalculatePerformance logic call karein
+        //        // Isme ConfidentialEvaluation ka logic bhi add karein
+        //        var perf = CalculatePerformance(tid, sessionId);
+        //        finalData.Add(perf);
+        //    }
+        //    return Ok(finalData);
+        //}
+
+        //// Helper method (Taake code duplicate na ho)
+        //private object CalculatePerformance(string teacherId, int sessionId)
+        //{
+        //    const double MAX = 4.0;
+        //    const double SCALE = 10.0;
+
+        //    // 1. Student Evaluations
+        //    var studentList = db.StudentEvaluation
+        //        .Where(s => s.Enrollment.teacherID == teacherId && s.Enrollment.sessionID == sessionId)
+        //        .ToList();
+        //    double sTotal = studentList.Sum(s => (double)s.score);
+        //    double sMax = studentList.Count * MAX;
+        //    double sAvg = sMax > 0 ? (sTotal / sMax) * SCALE : 0;
+
+        //    // 2. Peer Evaluations
+        //    var peerList = db.PeerEvaluation
+        //        .Where(p => p.evaluateeID == teacherId && p.PeerEvaluator.sessionID == sessionId)
+        //        .ToList();
+        //    double pTotal = peerList.Sum(p => (double)p.score);
+        //    double pMax = peerList.Count * MAX;
+        //    double pAvg = pMax > 0 ? (pTotal / pMax) * SCALE : 0;
+
+        //    // ✅ 3. CHR — Enrollment se session verify
+        //    var isEnrolled = db.Enrollment
+        //        .Any(e => e.teacherID == teacherId && e.sessionID == sessionId);
+
+        //    // 3. CHR Average Score — Session filter ke saath
+        //    // Sirf us session ki CHR records consider hongi
+        //    var chrAvg = 0.0;
+
+        //    var chrRawData = db.CHR
+        //        .Where(c => c.TeacherID == teacherId && c.sessionID == sessionId)
+        //        .Select(x => new { LateIn = x.LateIn ?? 0, LeftEarly = x.LeftEarly ?? 0 })
+        //        .ToList();
+
+        //    chrAvg = chrRawData.Any()
+        //        ? chrRawData.Select(x => {
+        //            int total = x.LateIn + x.LeftEarly;
+        //            if (total >= 10) return 0.0;
+        //            if (total >= 6) return 3.0;
+        //            if (total >= 1) return 4.0;
+        //            return 5.0;
+        //        }).Average()
+        //        : 0.0;
+
+        //    // CHR ko 10 scale pe convert karo (baaki scores ki tarah)
+        //    double chrPerc = Math.Round((chrAvg / 5.0) * SCALE, 2);
+
+        //    var teacher = db.Teacher.FirstOrDefault(t => t.userID == teacherId);
+
+        //    return new
+        //    {
+        //        TeacherID = teacherId,
+        //        Name = teacher?.name,
+        //        StudentAverage = Math.Round(sAvg, 2),
+        //        PeerAverage = Math.Round(pAvg, 2),
+        //        ChrAverage = chrPerc,           // ✅ CHR score 0-10 scale
+        //        ChrRawScore = Math.Round(chrAvg, 2), // ✅ Raw score 0-5 scale
+        //        CourseCode = db.Enrollment
+        //            .Where(e => e.teacherID == teacherId && e.sessionID == sessionId)
+        //            .Select(e => e.courseCode).FirstOrDefault()
+        //    };
+        //}
 
         //old KPI endpoint - not used yet
         //[HttpGet]
