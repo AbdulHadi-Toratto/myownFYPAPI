@@ -17,6 +17,7 @@ namespace myownFYPAPI.Models
         public Enrollment()
         {
             this.StudentEvaluation = new HashSet<StudentEvaluation>();
+            this.KPIScore = new HashSet<KPIScore>();
         }
     
         public int id { get; set; }
@@ -32,5 +33,6 @@ namespace myownFYPAPI.Models
         public virtual Student Student { get; set; }
         public virtual Teacher Teacher { get; set; }
         public virtual ICollection<StudentEvaluation> StudentEvaluation { get; set; }
+        public virtual ICollection<KPIScore> KPIScore { get; set; }
     }
 }

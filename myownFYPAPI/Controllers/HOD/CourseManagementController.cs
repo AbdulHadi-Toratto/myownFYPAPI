@@ -69,109 +69,72 @@ namespace myownFYPAPI.Controllers.HOD
 
 
 
-
-
-
-
-        // 2. POST: Evaluate Submission (Handles Paper and Folder)
         [HttpPost]
         [Route("SaveEvaluation")]
         public IHttpActionResult SaveEvaluation(EvaluationRequestDTO dto)
         {
-            if (dto == null || dto.Evaluations == null || !dto.Evaluations.Any())
-                return BadRequest("Invalid Data");
+            if (dto == null || dto.Evaluations == null)
+                return BadRequest("Payload data is missing.");
 
             try
             {
                 using (var scope = new TransactionScope())
                 {
-                    int total = dto.Evaluations.Count;
-
-                    //  FIX: Har course ke marks jodo
-                    int totalPaperEarned = 0;
-                    int totalFolderEarned = 0;
-
                     foreach (var eval in dto.Evaluations)
                     {
-                        // On-time = 5, Late = 2
-                        totalPaperEarned += eval.PaperStatus.ToLower().Contains("on-time") ? 5 : 2;
-                        totalFolderEarned += eval.FolderStatus.ToLower().Contains("on-time") ? 5 : 2;
+                        // Score Logic
+                        int paperScore = eval.PaperStatus.ToLower().Contains("on-time") ? 5 : 2;
+                        int folderScore = eval.FolderStatus.ToLower().Contains("on-time") ? 5 : 2;
+
+                        // Remarks Formatting
+                        string pRemarks = $"Paper: {eval.PaperStatus} | Note: {eval.Remarks}";
+                        string fRemarks = $"Folder: {eval.FolderStatus} | Note: {eval.Remarks}";
+
+                        // Call Helper for both KPIs
+                        UpsertScore(dto.TeacherID, dto.SessionID, "Paper Submission", paperScore, dto.HODID, eval.CourseCode, pRemarks);
+                        UpsertScore(dto.TeacherID, dto.SessionID, "Folder Submission", folderScore, dto.HODID, eval.CourseCode, fRemarks);
                     }
-
-                    // FIX: Sum ki bajaye average lo
-                    // Example: 3 courses sab on-time  → (5+5+5)/3 = 5 
-                    // Example: 3 courses sab late      → (2+2+2)/3 = 2 
-                    // Example: 2 courses 1 each        → (5+2)/2   = 4 
-                    int paperScore = (int)Math.Round((double)totalPaperEarned / total);
-                    int folderScore = (int)Math.Round((double)totalFolderEarned / total);
-
-                    // FIX: Contains ki bajaye direct ID comparison — EF error nahi dega
-                    // Paper ke purane scores delete karo
-                    var paperMapping = db.EmployeSessionKPI.FirstOrDefault(m =>
-                        m.SubKPI.name.Contains("Paper Submission") && m.SessionID == dto.SessionID);
-
-                    if (paperMapping != null)
-                    {
-                        int paperMappingId = paperMapping.id;
-                        var oldPaper = db.KPIScore
-                            .Where(s => s.empID == dto.TeacherID && s.empKPIID == paperMappingId)
-                            .ToList();
-                        db.KPIScore.RemoveRange(oldPaper);
-                    }
-
-                    // Folder ke purane scores delete karo
-                    var folderMapping = db.EmployeSessionKPI.FirstOrDefault(m =>
-                        m.SubKPI.name.Contains("Folder Submission") && m.SessionID == dto.SessionID);
-
-                    if (folderMapping != null)
-                    {
-                        int folderMappingId = folderMapping.id;
-                        var oldFolder = db.KPIScore
-                            .Where(s => s.empID == dto.TeacherID && s.empKPIID == folderMappingId)
-                            .ToList();
-                        db.KPIScore.RemoveRange(oldFolder);
-                    }
-
-                    // Pehle delete save karo
-                    db.SaveChanges();
-
-                    //  Naye averaged scores save karo (ek record per SubKPI)
-                    UpsertScore(dto.TeacherID, dto.SessionID, "Paper Submission", paperScore, dto.HODID);
-                    UpsertScore(dto.TeacherID, dto.SessionID, "Folder Submission", folderScore, dto.HODID);
 
                     db.SaveChanges();
                     scope.Complete();
-
-                    return Ok(new
-                    {
-                        message = "Evaluation saved successfully!",
-                        paperScore,
-                        folderScore,
-                        totalCourses = total
-                    });
+                    return Ok(new { Message = "Teacher evaluation saved successfully for all courses!" });
                 }
             }
             catch (Exception ex)
             {
-                return InternalServerError(new Exception("Backend Error: " + ex.Message));
+                return InternalServerError(new Exception("Database Save Error: " + ex.Message));
             }
         }
-
-        // FIX: CourseCode parameter hata diya — ek hi record per teacher per SubKPI
-        private void UpsertScore(string tid, int sid, string subKpiName, int scoreValue, string hodId)
+        // 2. POST: Evaluate Submission (Handles Paper and Folder)
+        private void UpsertScore(string tid, int sid, string subKpiName, int score, string hodId, string courseCode, string remarks)
         {
+            // 1. Enrollment ID dhoondain (Schema ke mutabiq names use kiye hain)
+            // Teacher table mein 'userID' aur Course table mein 'code' hai
+            var enrollment = db.Enrollment.FirstOrDefault(e =>
+                e.teacherID == tid &&
+                e.courseCode == courseCode &&
+                e.sessionID == sid);
+
+            if (enrollment == null) return;
+
+            // 2. SubKPI mapping dhoondain
             var mapping = db.EmployeSessionKPI.FirstOrDefault(m =>
-                          m.SubKPI.name.Contains(subKpiName) && m.SessionID == sid);
+                m.SubKPI.name.Contains(subKpiName) &&
+                m.SessionID == sid);
 
             if (mapping == null) return;
 
-            var existingScore = db.KPIScore.FirstOrDefault(s =>
-                                s.empKPIID == mapping.id && s.empID == tid);
+            // 3. KPIScore mein check karein
+            int enrollId = enrollment.id;
+            var existing = db.KPIScore.FirstOrDefault(s =>
+                s.empKPIID == mapping.id &&
+                s.enrollmentID == enrollId);
 
-            if (existingScore != null)
+            if (existing != null)
             {
-                existingScore.score = scoreValue;
-                existingScore.evaluatorID = hodId;
+                existing.score = score;
+                existing.evaluatorID = hodId;
+                existing.remarks = remarks;
             }
             else
             {
@@ -179,44 +142,205 @@ namespace myownFYPAPI.Controllers.HOD
                 {
                     empKPIID = mapping.id,
                     empID = tid,
-                    score = scoreValue,
-                    evaluatorID = hodId
+                    score = score,
+                    evaluatorID = hodId,
+                    enrollmentID = enrollId,
+                    remarks = remarks
                 });
             }
         }
 
-        // 4. GET: Teacher Performance/Remarks for Teacher Login
+
+
+
+
+
+        // 2. POST: Evaluate Submission (Handles Paper and Folder) - Old without HOD Remarks
+        //[HttpPost]
+        //[Route("SaveEvaluation")]
+        //public IHttpActionResult SaveEvaluation(EvaluationRequestDTO dto)
+        //{
+        //    if (dto == null || dto.Evaluations == null || !dto.Evaluations.Any())
+        //        return BadRequest("Invalid Data");
+
+        //    try
+        //    {
+        //        using (var scope = new TransactionScope())
+        //        {
+        //            int total = dto.Evaluations.Count;
+
+        //            //  FIX: Har course ke marks jodo
+        //            int totalPaperEarned = 0;
+        //            int totalFolderEarned = 0;
+
+        //            foreach (var eval in dto.Evaluations)
+        //            {
+        //                // On-time = 5, Late = 2
+        //                totalPaperEarned += eval.PaperStatus.ToLower().Contains("on-time") ? 5 : 2;
+        //                totalFolderEarned += eval.FolderStatus.ToLower().Contains("on-time") ? 5 : 2;
+        //            }
+
+        //            // FIX: Sum ki bajaye average lo
+        //            // Example: 3 courses sab on-time  → (5+5+5)/3 = 5 
+        //            // Example: 3 courses sab late      → (2+2+2)/3 = 2 
+        //            // Example: 2 courses 1 each        → (5+2)/2   = 4 
+        //            int paperScore = (int)Math.Round((double)totalPaperEarned / total);
+        //            int folderScore = (int)Math.Round((double)totalFolderEarned / total);
+
+        //            // FIX: Contains ki bajaye direct ID comparison — EF error nahi dega
+        //            // Paper ke purane scores delete karo
+        //            var paperMapping = db.EmployeSessionKPI.FirstOrDefault(m =>
+        //                m.SubKPI.name.Contains("Paper Submission") && m.SessionID == dto.SessionID);
+
+        //            if (paperMapping != null)
+        //            {
+        //                int paperMappingId = paperMapping.id;
+        //                var oldPaper = db.KPIScore
+        //                    .Where(s => s.empID == dto.TeacherID && s.empKPIID == paperMappingId)
+        //                    .ToList();
+        //                db.KPIScore.RemoveRange(oldPaper);
+        //            }
+
+        //            // Folder ke purane scores delete karo
+        //            var folderMapping = db.EmployeSessionKPI.FirstOrDefault(m =>
+        //                m.SubKPI.name.Contains("Folder Submission") && m.SessionID == dto.SessionID);
+
+        //            if (folderMapping != null)
+        //            {
+        //                int folderMappingId = folderMapping.id;
+        //                var oldFolder = db.KPIScore
+        //                    .Where(s => s.empID == dto.TeacherID && s.empKPIID == folderMappingId)
+        //                    .ToList();
+        //                db.KPIScore.RemoveRange(oldFolder);
+        //            }
+
+        //            // Pehle delete save karo
+        //            db.SaveChanges();
+
+        //            //  Naye averaged scores save karo (ek record per SubKPI)
+        //            UpsertScore(dto.TeacherID, dto.SessionID, "Paper Submission", paperScore, dto.HODID);
+        //            UpsertScore(dto.TeacherID, dto.SessionID, "Folder Submission", folderScore, dto.HODID);
+
+        //            db.SaveChanges();
+        //            scope.Complete();
+
+        //            return Ok(new
+        //            {
+        //                message = "Evaluation saved successfully!",
+        //                paperScore,
+        //                folderScore,
+        //                totalCourses = total
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return InternalServerError(new Exception("Backend Error: " + ex.Message));
+        //    }
+        //}
+
+        //// FIX: CourseCode parameter hata diya — ek hi record per teacher per SubKPI
+        //private void UpsertScore(string tid, int sid, string subKpiName, int scoreValue, string hodId)
+        //{
+        //    var mapping = db.EmployeSessionKPI.FirstOrDefault(m =>
+        //                  m.SubKPI.name.Contains(subKpiName) && m.SessionID == sid);
+
+        //    if (mapping == null) return;
+
+        //    var existingScore = db.KPIScore.FirstOrDefault(s =>
+        //                        s.empKPIID == mapping.id && s.empID == tid);
+
+        //    if (existingScore != null)
+        //    {
+        //        existingScore.score = scoreValue;
+        //        existingScore.evaluatorID = hodId;
+        //    }
+        //    else
+        //    {
+        //        db.KPIScore.Add(new KPIScore
+        //        {
+        //            empKPIID = mapping.id,
+        //            empID = tid,
+        //            score = scoreValue,
+        //            evaluatorID = hodId
+        //        });
+        //    }
+        //}
+
+
         [HttpGet]
         [Route("my-Courseperformance/{tid}/{sid}")]
         public IHttpActionResult GetTeacherRemarks(string tid, int sid)
         {
             try
             {
-
                 var performance = (from s in db.KPIScore
                                    join m in db.EmployeSessionKPI on s.empKPIID equals m.id
                                    join sub in db.SubKPI on m.SubKPIID equals sub.id
+                                   join e in db.Enrollment on s.enrollmentID equals e.id
                                    where s.empID == tid && m.SessionID == sid
                                    select new
                                    {
+                                       CourseCode = e.courseCode,
                                        Activity = sub.name,
                                        ObtainedScore = s.score,
                                        Status = s.score == 5 ? "On Time" : "Late",
-                                       Remarks = s.score == 5
-                                           ? "Excellent! Submitted on time."
-                                           : "Delayed submission recorded."
+                                       // Default Remark + Database se manual Remark dono ko jor diya
+                                       Remarks = (s.score == 5 ? "Excellent! Submitted on time." : "Delayed submission recorded.")
+                                                 + " | HOD Note: " + (s.remarks ?? "No additional notes.")
                                    }).ToList();
 
-                if (!performance.Any())
-                    return NotFound();
+                var courseDetails = (from e in db.Enrollment
+                                     join c in db.Course on e.courseCode equals c.code
+                                     where e.teacherID == tid && e.sessionID == sid
+                                     select new
+                                     {
+                                         CourseCode = e.courseCode,
+                                         CourseName = c.title
+                                     }).Distinct().ToList();
 
-                return Ok(performance);
+                return Ok(new { Performance = performance, Courses = courseDetails });
             }
             catch (Exception ex)
             {
-                return InternalServerError(new Exception("Fetch performance error: " + ex.Message));
+                return InternalServerError(new Exception("Error: " + ex.Message));
             }
         }
+
+
+
+        // 4. GET: Teacher Performance/Remarks for Teacher Login - Optional for HOD to view before enrollement
+        //[HttpGet]
+        //[Route("my-Courseperformance/{tid}/{sid}")]
+        //public IHttpActionResult GetTeacherRemarks(string tid, int sid)
+        //{
+        //    try
+        //    {
+
+        //        var performance = (from s in db.KPIScore
+        //                           join m in db.EmployeSessionKPI on s.empKPIID equals m.id
+        //                           join sub in db.SubKPI on m.SubKPIID equals sub.id
+        //                           where s.empID == tid && m.SessionID == sid
+        //                           select new
+        //                           {
+        //                               Activity = sub.name,
+        //                               ObtainedScore = s.score,
+        //                               Status = s.score == 5 ? "On Time" : "Late",
+        //                               Remarks = s.score == 5
+        //                                   ? "Excellent! Submitted on time."
+        //                                   : "Delayed submission recorded."
+        //                           }).ToList();
+
+        //        if (!performance.Any())
+        //            return NotFound();
+
+        //        return Ok(performance);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return InternalServerError(new Exception("Fetch performance error: " + ex.Message));
+        //    }
+        //}
 
         protected override void Dispose(bool disposing)
         {

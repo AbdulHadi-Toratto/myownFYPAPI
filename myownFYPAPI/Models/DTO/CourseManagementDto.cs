@@ -42,8 +42,17 @@ namespace myownFYPAPI.Models.DTO
         public class CourseEvalDTO
         {
             public string CourseCode { get; set; }
+            public int EnrollmentID { get; set; }
             public string PaperStatus { get; set; }
             public string FolderStatus { get; set; }
+            public string Remarks { get; set; }
+        }
+        public class IndividualEvaluationDTO
+        {
+            public string CourseCode { get; set; }
+            public string PaperStatus { get; set; }
+            public string FolderStatus { get; set; }
+            public string Remarks { get; set; } // HOD ke custom remarks yahan aayenge
         }
     }
 }
