@@ -24,6 +24,8 @@ namespace myownFYPAPI.Models
         public string teacherID { get; set; }
         public string courseCode { get; set; }
         public Nullable<int> sessionID { get; set; }
+        public string Section { get; set; }
+        public string Grade { get; set; }
     
         public virtual Course Course { get; set; }
         public virtual Session Session { get; set; }

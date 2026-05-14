@@ -192,6 +192,7 @@ namespace myownFYPAPI.Controllers.HOD
         {
             try
             {
+
                 var performance = (from s in db.KPIScore
                                    join m in db.EmployeSessionKPI on s.empKPIID equals m.id
                                    join sub in db.SubKPI on m.SubKPIID equals sub.id

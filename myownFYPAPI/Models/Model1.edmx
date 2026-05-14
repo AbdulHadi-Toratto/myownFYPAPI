@@ -73,6 +73,8 @@
           <Property Name="teacherID" Type="varchar" MaxLength="20" />
           <Property Name="courseCode" Type="varchar" MaxLength="20" />
           <Property Name="sessionID" Type="int" />
+          <Property Name="Section" Type="varchar" MaxLength="20" />
+          <Property Name="Grade" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="KPI">
           <Key>
@@ -185,6 +187,7 @@
           <Property Name="userID" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="30" />
           <Property Name="admissionSessionID" Type="int" />
+          <Property Name="CGPA" Type="decimal" Precision="3" Scale="2" />
         </EntityType>
         <EntityType Name="StudentEvaluation">
           <Key>
@@ -1018,6 +1021,8 @@
           <NavigationProperty Name="Student" Relationship="Self.FK__Enrollmen__stude__797309D9" FromRole="Enrollment" ToRole="Student" />
           <NavigationProperty Name="Teacher" Relationship="Self.FK__Enrollmen__teach__7A672E12" FromRole="Enrollment" ToRole="Teacher" />
           <NavigationProperty Name="StudentEvaluation" Relationship="Self.FK__StudentEv__enrol__01142BA1" FromRole="Enrollment" ToRole="StudentEvaluation" />
+          <Property Name="Section" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Grade" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="KPI">
           <Key>
@@ -1111,6 +1116,7 @@
           <NavigationProperty Name="Enrollment" Relationship="Self.FK__Enrollmen__stude__797309D9" FromRole="Student" ToRole="Enrollment" />
           <NavigationProperty Name="Session" Relationship="Self.FK__Student__admissi__71D1E811" FromRole="Student" ToRole="Session" />
           <NavigationProperty Name="Users" Relationship="Self.FK__Student__userID__70DDC3D8" FromRole="Student" ToRole="Users" />
+          <Property Name="CGPA" Type="Decimal" Precision="3" Scale="2" />
         </EntityType>
         <EntityType Name="StudentEvaluation">
           <Key>
@@ -2073,6 +2079,8 @@
           <EntitySetMapping Name="Enrollment">
             <EntityTypeMapping TypeName="fypapiv1Model.Enrollment">
               <MappingFragment StoreEntitySet="Enrollment">
+                <ScalarProperty Name="Grade" ColumnName="Grade" />
+                <ScalarProperty Name="Section" ColumnName="Section" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="studentID" ColumnName="studentID" />
                 <ScalarProperty Name="teacherID" ColumnName="teacherID" />
@@ -2143,6 +2151,7 @@
           <EntitySetMapping Name="Student">
             <EntityTypeMapping TypeName="fypapiv1Model.Student">
               <MappingFragment StoreEntitySet="Student">
+                <ScalarProperty Name="CGPA" ColumnName="CGPA" />
                 <ScalarProperty Name="userID" ColumnName="userID" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="admissionSessionID" ColumnName="admissionSessionID" />

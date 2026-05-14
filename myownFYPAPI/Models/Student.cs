@@ -22,6 +22,7 @@ namespace myownFYPAPI.Models
         public string userID { get; set; }
         public string name { get; set; }
         public Nullable<int> admissionSessionID { get; set; }
+        public Nullable<decimal> CGPA { get; set; }
     
         public virtual ICollection<Enrollment> Enrollment { get; set; }
         public virtual Session Session { get; set; }

@@ -53,7 +53,47 @@ namespace myownFYPAPI.Controllers.Student
 
             return Ok(enrollments);
         }
-        
+
+
+        [HttpGet]
+        [Route("CheckConfidentialStatus/{studentId}")]
+        public IHttpActionResult CheckConfidentialStatus(string studentId)
+        {
+            try
+            {
+                // 1. Pehle student ka section aur CGPA nikalen
+                var studentInfo = db.Enrollment
+                    .Where(e => e.studentID == studentId)
+                    .Select(e => new { e.Section, e.Student.CGPA })
+                    .FirstOrDefault();
+
+                if (studentInfo == null || string.IsNullOrEmpty(studentInfo.Section))
+                    return Ok(new { isConfidential = false });
+
+                // 2. Uske section ke tamam bacho ko CGPA ke mutabiq rank karein
+                var topStudents = db.Enrollment
+                    .Where(e => e.Section == studentInfo.Section)
+                    .Select(e => new {
+                        e.studentID,
+                        e.Student.CGPA
+                    })
+                    .Distinct()
+                    .OrderByDescending(s => s.CGPA)
+                    .Take(3) // Sirf top 3
+                    .ToList();
+
+                // 3. Check karein ke kya current student in top 3 mein hai
+                bool isTop3 = topStudents.Any(s => s.studentID == studentId);
+
+                return Ok(new { isConfidential = isTop3 });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
         [HttpPost]
         [Route("SubmitStudentEvaluation")]
